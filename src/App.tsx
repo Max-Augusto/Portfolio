@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { PratamaHeader } from './components/PratamaHeader';
 import { PratamaSidebar } from './components/PratamaSidebar';
 import { GeometricPolyhedron } from './components/GeometricPolyhedron';
@@ -18,22 +19,23 @@ import { MobileBottomBar } from './components/MobileBottomBar';
 import { Footer } from './components/Footer';
 import { ChevronLeft, ChevronRight, Hash } from 'lucide-react';
 
-const SECTIONS = [
-  { id: 'about', label: 'ABOUT', title: 'Sobre Mim' },
-  { id: 'what-i-do', label: 'WHAT I DO', title: 'O que Faço' },
-  { id: 'experience', label: 'EXPERIENCE', title: 'Experiência' },
-  { id: 'projects', label: 'PROJECTS', title: 'Projetos' },
-  { id: 'skills', label: 'SKILLS', title: 'Habilidades' },
-  { id: 'topology', label: 'TOPOLOGIA & LAB', title: 'Simulador de Rede & Diagnóstico N2' },
-  { id: 'terminal', label: 'TERMINAL', title: 'Console Terminal Interativo' },
-  { id: 'contact', label: 'CONTACT', title: 'Contato' },
-];
-
 const MainPortfolio: React.FC = () => {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('about');
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
+  const { language, isPT, t } = useLanguage();
+
+  const SECTIONS = [
+    { id: 'about', label: 'ABOUT', title: isPT ? 'Sobre Mim' : 'About Me' },
+    { id: 'what-i-do', label: 'WHAT I DO', title: isPT ? 'O que Faço' : 'What I Do' },
+    { id: 'experience', label: 'EXPERIENCE', title: isPT ? 'Experiência' : 'Experience' },
+    { id: 'projects', label: 'PROJECTS', title: isPT ? 'Projetos' : 'Projects' },
+    { id: 'skills', label: 'SKILLS', title: isPT ? 'Habilidades' : 'Skills' },
+    { id: 'topology', label: 'TOPOLOGY & LAB', title: isPT ? 'Simulador de Rede & Diagnóstico N2' : 'Network Simulator & L2/L3 Diagnostics' },
+    { id: 'terminal', label: 'TERMINAL', title: isPT ? 'Console Terminal Interativo' : 'Interactive Terminal Console' },
+    { id: 'contact', label: 'CONTACT', title: isPT ? 'Contato' : 'Contact' },
+  ];
 
   const currentIndex = SECTIONS.findIndex(s => s.id === activeSection);
   const progressPercent = ((currentIndex + 1) / SECTIONS.length) * 100;
@@ -107,10 +109,10 @@ const MainPortfolio: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0d14] text-slate-100 flex flex-col tech-grid-bg selection:bg-blue-600 selection:text-white relative overflow-x-hidden transition-colors duration-300">
+    <div className={`min-h-screen ${theme.bgBody} ${theme.textPrimary} flex flex-col tech-grid-bg selection:bg-blue-600 selection:text-white relative overflow-x-hidden transition-colors duration-300`}>
       
       {/* Top Screen Page Progress Bar */}
-      <div className="fixed top-0 left-0 right-0 h-[3px] bg-[#121620]/60 z-50 overflow-hidden pointer-events-none backdrop-blur-xs">
+      <div className={`fixed top-0 left-0 right-0 h-[3px] ${theme.bgSubCard}/60 z-50 overflow-hidden pointer-events-none backdrop-blur-xs`}>
         <motion.div 
           className={`h-full ${theme.activeBg}`}
           initial={{ width: 0 }}
@@ -157,21 +159,21 @@ const MainPortfolio: React.FC = () => {
         <main className="flex-1 w-full flex flex-col gap-5 min-w-0">
           
           {/* Active Page Header Breadcrumb Status */}
-          <div className="bg-[#121620]/80 border border-[#1e2433] rounded-2xl px-5 py-3 flex items-center justify-between font-mono text-xs text-slate-400 shadow-sm backdrop-blur-sm">
+          <div className={`${theme.bgCard}/80 border ${theme.borderCard} rounded-2xl px-5 py-3 flex items-center justify-between font-mono text-xs ${theme.textMuted} shadow-sm backdrop-blur-sm`}>
             <div className="flex items-center gap-2">
               <Hash className={`w-3.5 h-3.5 ${theme.activeText}`} />
-              <span className="text-slate-500">SECTION //</span>
+              <span className={theme.textMuted}>{t('section.prefix')}</span>
               <span className={`${theme.activeText} font-bold uppercase tracking-wider`}>
                 {SECTIONS[currentIndex]?.label || 'ABOUT'}
               </span>
-              <span className="text-slate-600 hidden sm:inline">•</span>
-              <span className="text-slate-400 text-[11px] hidden sm:inline">
+              <span className={`${theme.textMuted} hidden sm:inline`}>•</span>
+              <span className={`${theme.textSecondary} text-[11px] hidden sm:inline`}>
                 {SECTIONS[currentIndex]?.title}
               </span>
             </div>
 
-            <div className="text-[11px] text-slate-500 font-medium">
-              PÁGINA {currentIndex + 1} DE {SECTIONS.length}
+            <div className={`text-[11px] ${theme.textMuted} font-medium`}>
+              {t('section.page')} {currentIndex + 1} {t('section.of')} {SECTIONS.length}
             </div>
           </div>
 
@@ -192,18 +194,18 @@ const MainPortfolio: React.FC = () => {
           </div>
 
           {/* Bottom Pagination Bar */}
-          <div className="bg-[#121620] border border-[#1e2433] rounded-2xl p-4 flex items-center justify-between font-mono text-xs shadow-md">
+          <div className={`${theme.bgCard} border ${theme.borderCard} rounded-2xl p-4 flex items-center justify-between font-mono text-xs shadow-md`}>
             {prevSection ? (
               <button
                 onClick={() => handleSelectSection(prevSection.id)}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#181d2a] hover:bg-[#1f2638] text-slate-300 hover:text-white border border-[#272f42] hover:border-slate-600 transition-all cursor-pointer shadow-xs"
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl ${theme.bgSubCard} hover:${theme.bgCardHover} ${theme.textPrimary} border ${theme.borderSubCard} transition-all cursor-pointer shadow-xs`}
               >
                 <ChevronLeft className={`w-4 h-4 ${theme.activeText}`} />
                 <span className="font-bold">{prevSection.label}</span>
               </button>
             ) : (
-              <div className="text-[11px] text-slate-600 px-3 py-2">
-                INÍCIO DO CONSOLE
+              <div className={`text-[11px] ${theme.textMuted} px-3 py-2 font-medium`}>
+                {t('section.start')}
               </div>
             )}
 
@@ -216,7 +218,7 @@ const MainPortfolio: React.FC = () => {
                   className={`h-2 rounded-full transition-all cursor-pointer ${
                     activeSection === sec.id
                       ? `w-6 ${theme.activeBg} ${theme.activeGlow}`
-                      : 'w-2 bg-[#272f42] hover:bg-slate-500'
+                      : `w-2 ${theme.bgSubCard} border ${theme.borderSubCard} hover:bg-slate-400`
                   }`}
                   title={sec.label}
                 />
@@ -234,9 +236,9 @@ const MainPortfolio: React.FC = () => {
             ) : (
               <button
                 onClick={() => handleSelectSection('about')}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#181d2a] hover:bg-[#1f2638] text-slate-300 hover:text-white border border-[#272f42] transition-all cursor-pointer shadow-xs"
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl ${theme.bgSubCard} hover:${theme.bgCardHover} ${theme.textPrimary} border ${theme.borderSubCard} transition-all cursor-pointer shadow-xs`}
               >
-                <span>VOLTAR AO INÍCIO</span>
+                <span>{t('section.back_to_start')}</span>
                 <ChevronRight className={`w-4 h-4 ${theme.activeText}`} />
               </button>
             )}
@@ -276,8 +278,10 @@ const MainPortfolio: React.FC = () => {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <MainPortfolio />
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider>
+        <MainPortfolio />
+      </ThemeProvider>
+    </LanguageProvider>
   );
 }

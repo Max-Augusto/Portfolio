@@ -16,7 +16,8 @@ import {
   X
 } from 'lucide-react';
 import { useTheme, AccentColor } from '../context/ThemeContext';
-import { PERSONAL_INFO } from '../data/portfolioData';
+import { useLanguage } from '../context/LanguageContext';
+import { getPersonalInfo } from '../data/localizedData';
 
 interface CommandPaletteProps {
   isOpen: boolean;
@@ -33,7 +34,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 }) => {
   const [query, setQuery] = useState('');
   const [copiedText, setCopiedText] = useState<string | null>(null);
-  const { theme, setAccentColor, accentColor } = useTheme();
+  const { theme, setAccentColor, accentColor, isDark } = useTheme();
+  const { language, isPT, t } = useLanguage();
+  const personalInfo = getPersonalInfo(language);
 
   // Close on Escape
   useEffect(() => {
@@ -61,21 +64,21 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   };
 
   const sections = [
-    { id: 'about', label: 'Sobre Mim (About)', category: 'Navegação', icon: User, shortcut: '1' },
-    { id: 'what-i-do', label: 'O Que Faço (Architecture & Infra)', category: 'Navegação', icon: Layers, shortcut: '2' },
-    { id: 'experience', label: 'Experiência Profissional (Positivo S+)', category: 'Navegação', icon: FileText, shortcut: '3' },
-    { id: 'projects', label: 'Projetos (Betim Express & Microservices)', category: 'Navegação', icon: FolderGit2, shortcut: '4' },
-    { id: 'skills', label: 'Matriz de Habilidades (.NET, Django, Redes)', category: 'Navegação', icon: Layers, shortcut: '5' },
-    { id: 'topology', label: 'Topologia & Laboratório de Redes N2', category: 'Navegação', icon: Network, shortcut: '6' },
-    { id: 'terminal', label: 'Console Terminal Interativo', category: 'Navegação', icon: Terminal, shortcut: '7' },
-    { id: 'contact', label: 'Contato Direto & Mensagem', category: 'Navegação', icon: Send, shortcut: '8' },
+    { id: 'about', label: isPT ? 'Sobre Mim (About)' : 'About Me', category: isPT ? 'Navegação' : 'Navigation', icon: User, shortcut: '1' },
+    { id: 'what-i-do', label: isPT ? 'O Que Faço (Architecture & Infra)' : 'What I Do (Architecture & Infra)', category: isPT ? 'Navegação' : 'Navigation', icon: Layers, shortcut: '2' },
+    { id: 'experience', label: isPT ? 'Experiência Profissional (Positivo S+)' : 'Career Experience (Positivo S+)', category: isPT ? 'Navegação' : 'Navigation', icon: FileText, shortcut: '3' },
+    { id: 'projects', label: isPT ? 'Projetos (Betim Express & Microservices)' : 'Projects (Betim Express & Microservices)', category: isPT ? 'Navegação' : 'Navigation', icon: FolderGit2, shortcut: '4' },
+    { id: 'skills', label: isPT ? 'Matriz de Habilidades (.NET, Django, Redes)' : 'Skills Matrix (.NET, Django, Networks)', category: isPT ? 'Navegação' : 'Navigation', icon: Layers, shortcut: '5' },
+    { id: 'topology', label: isPT ? 'Topologia & Laboratório de Redes N2' : 'L2/L3 Topology Lab', category: isPT ? 'Navegação' : 'Navigation', icon: Network, shortcut: '6' },
+    { id: 'terminal', label: isPT ? 'Console Terminal Interativo' : 'Interactive Terminal Console', category: isPT ? 'Navegação' : 'Navigation', icon: Terminal, shortcut: '7' },
+    { id: 'contact', label: isPT ? 'Contato Direto & Mensagem' : 'Direct Contact & Message', category: isPT ? 'Navegação' : 'Navigation', icon: Send, shortcut: '8' },
   ];
 
   const themeOptions: { id: AccentColor; label: string; hex: string }[] = [
-    { id: 'blue', label: 'Cobalt Blue (Padrão)', hex: '#3b82f6' },
-    { id: 'cyan', label: 'Cyber Cyan (Redes)', hex: '#06b6d4' },
-    { id: 'amber', label: 'Amber Gold (Operações)', hex: '#eab308' },
-    { id: 'rose', label: 'Coral Rose (SaaS)', hex: '#f43f5e' },
+    { id: 'blue', label: 'Cobalt Blue', hex: '#3b82f6' },
+    { id: 'cyan', label: 'Cyber Cyan', hex: '#06b6d4' },
+    { id: 'amber', label: 'Amber Gold', hex: '#eab308' },
+    { id: 'rose', label: 'Coral Rose', hex: '#f43f5e' },
   ];
 
   const filteredSections = sections.filter(s => 
@@ -108,22 +111,22 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -10 }}
           transition={{ duration: 0.2 }}
-          className="relative w-full max-w-xl bg-[#121620] border border-[#242b3d] rounded-2xl shadow-2xl overflow-hidden z-10"
+          className={`relative w-full max-w-xl ${theme.bgCard} border ${theme.borderCard} rounded-2xl shadow-2xl overflow-hidden z-10`}
         >
           {/* Top Search Input */}
-          <div className="flex items-center px-4 border-b border-[#1e2433] bg-[#181d2a]/70">
+          <div className={`flex items-center px-4 border-b ${theme.borderCard} ${theme.bgSubCard}`}>
             <Search className={`w-5 h-5 ${theme.activeText} shrink-0`} />
             <input
               type="text"
               autoFocus
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Digite um comando, seção ou ação..."
-              className="w-full bg-transparent px-3.5 py-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none font-mono"
+              placeholder={isPT ? "Digite um comando, seção ou ação..." : "Type a command, section or action..."}
+              className={`w-full bg-transparent px-3.5 py-4 text-sm ${theme.textPrimary} placeholder-slate-400 focus:outline-none font-mono`}
             />
             <button
               onClick={onClose}
-              className="p-1 rounded-lg hover:bg-[#242b3d] text-slate-400 hover:text-slate-200 transition-colors"
+              className={`p-1 rounded-lg hover:${theme.bgCard} ${theme.textMuted} hover:${theme.textPrimary} transition-colors`}
             >
               <X className="w-4 h-4" />
             </button>
@@ -134,8 +137,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             
             {/* Quick Actions */}
             <div>
-              <div className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                Ações Rápidas
+              <div className={`px-3 py-1.5 text-[10px] font-bold ${theme.textMuted} uppercase tracking-wider`}>
+                {isPT ? 'Ações Rápidas' : 'Quick Actions'}
               </div>
               <div className="space-y-1">
                 <button
@@ -143,46 +146,46 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                     onOpenResume();
                     onClose();
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-[#181d2a] text-slate-200 hover:text-white transition-colors cursor-pointer group"
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl hover:${theme.bgSubCard} ${theme.textPrimary} transition-colors cursor-pointer group`}
                 >
                   <div className="flex items-center gap-2.5">
                     <FileText className={`w-4 h-4 ${theme.activeText}`} />
-                    <span>Visualizar Currículo Completo (PDF)</span>
+                    <span>{isPT ? 'Visualizar Currículo Completo (PDF)' : 'View Full Resume (PDF)'}</span>
                   </div>
-                  <span className="text-[10px] bg-[#1e2433] px-2 py-0.5 rounded text-slate-400">
-                    Abrir CV
+                  <span className={`text-[10px] ${theme.bgSubCard} px-2 py-0.5 rounded ${theme.textMuted}`}>
+                    CV
                   </span>
                 </button>
 
                 <button
-                  onClick={() => handleCopy(PERSONAL_INFO.email, 'Email')}
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-[#181d2a] text-slate-200 hover:text-white transition-colors cursor-pointer group"
+                  onClick={() => handleCopy(personalInfo.email, 'Email')}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl hover:${theme.bgSubCard} ${theme.textPrimary} transition-colors cursor-pointer group`}
                 >
                   <div className="flex items-center gap-2.5">
                     {copiedText === 'Email' ? (
-                      <Check className="w-4 h-4 text-emerald-400" />
+                      <Check className="w-4 h-4 text-emerald-500" />
                     ) : (
                       <Copy className={`w-4 h-4 ${theme.activeText}`} />
                     )}
-                    <span>{PERSONAL_INFO.email}</span>
+                    <span>{personalInfo.email}</span>
                   </div>
-                  <span className="text-[10px] bg-[#1e2433] px-2 py-0.5 rounded text-slate-400">
-                    {copiedText === 'Email' ? 'Copiado!' : 'Copiar E-mail'}
+                  <span className={`text-[10px] ${theme.bgSubCard} px-2 py-0.5 rounded ${theme.textMuted}`}>
+                    {copiedText === 'Email' ? t('header.copied') : t('header.copy_email')}
                   </span>
                 </button>
 
                 <a
-                  href={PERSONAL_INFO.github}
+                  href={personalInfo.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-[#181d2a] text-slate-200 hover:text-white transition-colors cursor-pointer group"
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl hover:${theme.bgSubCard} ${theme.textPrimary} transition-colors cursor-pointer group`}
                 >
                   <div className="flex items-center gap-2.5">
                     <ExternalLink className={`w-4 h-4 ${theme.activeText}`} />
                     <span>GitHub: github.com/Max-Augusto</span>
                   </div>
-                  <span className="text-[10px] bg-[#1e2433] px-2 py-0.5 rounded text-slate-400">
-                    Externo ↗
+                  <span className={`text-[10px] ${theme.bgSubCard} px-2 py-0.5 rounded ${theme.textMuted}`}>
+                    GitHub ↗
                   </span>
                 </a>
               </div>
@@ -191,8 +194,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             {/* Navigation Section */}
             {filteredSections.length > 0 && (
               <div>
-                <div className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                  Navegar Para
+                <div className={`px-3 py-1.5 text-[10px] font-bold ${theme.textMuted} uppercase tracking-wider`}>
+                  {isPT ? 'Navegar Para' : 'Navigate To'}
                 </div>
                 <div className="space-y-1">
                   {filteredSections.map((item) => {
@@ -204,13 +207,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                           onNavigate(item.id);
                           onClose();
                         }}
-                        className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-[#181d2a] text-slate-200 hover:text-white transition-colors cursor-pointer group"
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl hover:${theme.bgSubCard} ${theme.textPrimary} transition-colors cursor-pointer group`}
                       >
                         <div className="flex items-center gap-2.5">
-                          <Icon className={`w-4 h-4 text-slate-400 group-hover:${theme.activeText}`} />
+                          <Icon className={`w-4 h-4 ${theme.textMuted} group-hover:${theme.activeText}`} />
                           <span>{item.label}</span>
                         </div>
-                        <kbd className="text-[10px] bg-[#1e2433] px-2 py-0.5 rounded text-slate-400 font-bold border border-[#272f42]">
+                        <kbd className={`text-[10px] ${theme.bgSubCard} px-2 py-0.5 rounded ${theme.textMuted} font-bold border ${theme.borderSubCard}`}>
                           {item.shortcut}
                         </kbd>
                       </button>
@@ -223,8 +226,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             {/* Themes Switcher */}
             {filteredThemes.length > 0 && (
               <div>
-                <div className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                  Temas & Cores do Console
+                <div className={`px-3 py-1.5 text-[10px] font-bold ${theme.textMuted} uppercase tracking-wider`}>
+                  {isPT ? 'Paleta de Cores' : 'Color Accent'}
                 </div>
                 <div className="space-y-1">
                   {filteredThemes.map((item) => (
@@ -233,7 +236,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                       onClick={() => {
                         setAccentColor(item.id);
                       }}
-                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-[#181d2a] text-slate-200 hover:text-white transition-colors cursor-pointer"
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl hover:${theme.bgSubCard} ${theme.textPrimary} transition-colors cursor-pointer`}
                     >
                       <div className="flex items-center gap-2.5">
                         <span 
@@ -243,7 +246,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                         <span>{item.label}</span>
                       </div>
                       {accentColor === item.id && (
-                        <span className="text-[10px] text-emerald-400 font-bold">
+                        <span className="text-[10px] text-emerald-500 font-bold">
                           Ativo ✓
                         </span>
                       )}
@@ -256,12 +259,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           </div>
 
           {/* Footer Shortcuts */}
-          <div className="p-3 bg-[#181d2a]/80 border-t border-[#1e2433] flex items-center justify-between text-[11px] font-mono text-slate-500">
-            <span>Dica: Use <strong>ESC</strong> para fechar</span>
+          <div className={`p-3 ${theme.bgSubCard} border-t ${theme.borderCard} flex items-center justify-between text-[11px] font-mono ${theme.textMuted}`}>
+            <span>{isPT ? 'Dica: Use ESC para fechar' : 'Tip: Use ESC to close'}</span>
             <div className="flex items-center gap-2">
-              <span>Navegar: <strong>1 a 8</strong></span>
-              <span>•</span>
-              <span>Paleta: <strong>⌘K / Ctrl+K</strong></span>
+              <span>{isPT ? 'Paleta: ⌘K / Ctrl+K' : 'Palette: ⌘K / Ctrl+K'}</span>
             </div>
           </div>
         </motion.div>

@@ -8,16 +8,22 @@ import {
   Check, 
   Command 
 } from 'lucide-react';
-import { PERSONAL_INFO, PROJECTS, EXPERIENCES, TERMINAL_COMMANDS_HELP } from '../data/portfolioData';
+import { getPersonalInfo, getProjects, getExperiences, getSkillCategories } from '../data/localizedData';
 import { TerminalLog } from '../types';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 
 interface TerminalWidgetProps {
   onNavigate?: (section: string) => void;
 }
 
 export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) => {
-  const { theme, setAccentColor } = useTheme();
+  const { theme, setAccentColor, isDark } = useTheme();
+  const { language, isPT, t } = useLanguage();
+  const personalInfo = getPersonalInfo(language);
+  const projects = getProjects(language);
+  const experiences = getExperiences(language);
+
   const [input, setInput] = useState('');
   const [isMatrixMode, setIsMatrixMode] = useState(false);
   const [history, setHistory] = useState<TerminalLog[]>([
@@ -36,7 +42,7 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
     {
       id: 'init-3',
       type: 'success',
-      text: 'Digite "help" para ver os comandos disponíveis, "matrix" para modo hacker ou clique nos atalhos.',
+      text: isPT ? 'Digite "help" para ver os comandos disponíveis, "matrix" para modo hacker ou clique nos atalhos.' : 'Type "help" to see available commands, "matrix" for hacker mode or click quickbar buttons.',
       timestamp: '00:00:03',
     },
   ]);
@@ -88,10 +94,14 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
 
     switch (mainCmd) {
       case 'help': {
+        const helpText = isPT 
+          ? `Comandos do Console do Operador:\n• help         - Lista todos os comandos disponíveis\n• about        - Resumo do perfil e bio técnica\n• skills       - Lista capacidades de backend, redes e cloud\n• projects     - Exibe projetos e SaaS em produção\n• exp          - Histórico profissional e SLAs aeroportuários\n• topology     - Abre simulador de topologia de redes L2/L3\n• contact      - Exibe email, telefone e canais de contato\n• ping         - Simula teste de conectividade ICMP\n• curl saas    - Faz handshake HTTP com o SaaS Betim Express\n• matrix       - Alterna modo visual hacker\n• theme <col>  - Altera tema (blue, cyan, amber, rose)\n• clear        - Limpa o histórico do console`
+          : `Operator Console Commands:\n• help         - Show available commands\n• about        - Display profile and engineering bio\n• skills       - List backend, networks & cloud capabilities\n• projects     - Show projects and live SaaS\n• exp          - Career history & airport SLA metrics\n• topology     - Open interactive L2/L3 topology simulator\n• contact      - Display email, phone & direct channels\n• ping         - Simulate ICMP latency check\n• curl saas    - Query Betim Express SaaS endpoint\n• matrix       - Toggle hacker green matrix mode\n• theme <col>  - Switch theme (blue, cyan, amber, rose)\n• clear        - Clear console history`;
+
         newLogs.push({
           id: `out-${cmdId}`,
           type: 'output',
-          text: `Comandos do Console do Operador:\n${TERMINAL_COMMANDS_HELP.map(c => `• ${c.cmd.padEnd(12)} - ${c.desc}`).join('\n')}`,
+          text: helpText,
           timestamp: getTimestamp(),
         });
         break;
@@ -101,7 +111,7 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
         newLogs.push({
           id: `out-${cmdId}`,
           type: 'info',
-          text: `[OPERADOR] ${PERSONAL_INFO.name}\n[PERFIL] ${PERSONAL_INFO.title}\n[LOCAL] ${PERSONAL_INFO.location}\n\n${PERSONAL_INFO.bio}`,
+          text: `[OPERATOR] ${personalInfo.name}\n[ROLE] ${personalInfo.title}\n[LOCATION] ${personalInfo.location}\n\n${personalInfo.bio}`,
           timestamp: getTimestamp(),
         });
         break;
@@ -149,7 +159,7 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
       case 'projects': {
         const projOutput = [
           '🚀 PROJETOS & REPOSITÓRIOS EM DESTAQUE:',
-          ...PROJECTS.map((p, i) => `${i + 1}. [${p.badge}] ${p.title}\n   ↳ ${p.subtitle}\n   ↳ Stack: ${p.tags.join(', ')}\n   ↳ URL: ${p.liveUrl || p.githubUrl}`),
+          ...projects.map((p, i) => `${i + 1}. [${p.badge}] ${p.title}\n   ↳ ${p.subtitle}\n   ↳ Stack: ${p.tags.join(', ')}\n   ↳ URL: ${p.liveUrl || p.githubUrl}`),
         ].join('\n\n');
 
         newLogs.push({
@@ -165,7 +175,7 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
       case 'experience': {
         const expOutput = [
           '📅 HISTÓRICO DE OPERAÇÕES E EXPERIÊNCIA:',
-          ...EXPERIENCES.map((e, i) => `${i + 1}. ${e.company} — ${e.role} (${e.period})\n   ↳ Local: ${e.location} | [${e.badge}]\n   ↳ Destaque: ${e.highlights[0]}`),
+          ...experiences.map((e, i) => `${i + 1}. ${e.company} — ${e.role} (${e.period})\n   ↳ Local: ${e.location} | [${e.badge}]\n   ↳ Destaque: ${e.highlights[0]}`),
         ].join('\n\n');
 
         newLogs.push({
@@ -180,11 +190,11 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
       case 'contact': {
         const contactOutput = [
           '📬 CANAIS DE COMUNICAÇÃO DIRETA:',
-          `• E-mail:    ${PERSONAL_INFO.email}`,
-          `• Telefone:  ${PERSONAL_INFO.phone}`,
-          `• LinkedIn:  ${PERSONAL_INFO.linkedin}`,
-          `• GitHub:    ${PERSONAL_INFO.github}`,
-          `• Local:     ${PERSONAL_INFO.location}`,
+          `• E-mail:    ${personalInfo.email}`,
+          `• Telefone:  ${personalInfo.phone}`,
+          `• LinkedIn:  ${personalInfo.linkedin}`,
+          `• GitHub:    ${personalInfo.github}`,
+          `• Local:     ${personalInfo.location}`,
         ].join('\n');
 
         newLogs.push({
@@ -255,7 +265,7 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
           newLogs.push({
             id: `out-${cmdId}`,
             type: 'output',
-            text: `=== CURRÍCULO TÉCNICO: MAX AUGUSTO ===\n- Cargo: Support & Infrastructure Analyst | Python & Django Developer\n- Formação: Bacharelado em Sistemas de Informação (PUC Minas, 2024-2027)\n- Certificação: Introduction to Cybersecurity (Cisco)\n- Experiências: Positivo S+ (Aeroporto/Aviação), Betim Express (SaaS), Prefeitura de Betim (N2/Redes)\n- Contato: ${PERSONAL_INFO.email} | ${PERSONAL_INFO.phone}`,
+            text: `=== CURRÍCULO TÉCNICO: MAX AUGUSTO ===\n- Cargo: Support & Infrastructure Analyst | Python & Django Developer\n- Formação: Bacharelado em Sistemas de Informação (PUC Minas, 2024-2027)\n- Certificação: Introduction to Cybersecurity (Cisco)\n- Experiências: Positivo S+ (Aeroporto/Aviação), Betim Express (SaaS), Prefeitura de Betim (N2/Redes)\n- Contato: ${personalInfo.email} | ${personalInfo.phone}`,
             timestamp: getTimestamp(),
           });
         } else {
@@ -269,22 +279,12 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
         break;
       }
 
-      case 'sudo': {
-        newLogs.push({
-          id: `out-${cmdId}`,
-          type: 'error',
-          text: `operator is not in the sudoers file. This incident will be reported to Max Augusto.`,
-          timestamp: getTimestamp(),
-        });
-        break;
-      }
-
       case 'matrix': {
         setIsMatrixMode(prev => !prev);
         newLogs.push({
           id: `out-${cmdId}`,
           type: 'success',
-          text: `[MATRIX] Modo Matrix ${!isMatrixMode ? 'ATIVADO' : 'DESATIVADO'}. Digite "matrix" novamente para alternar.`,
+          text: `[MATRIX] Modo Matrix ${!isMatrixMode ? 'ATIVADO' : 'DESATIVADO'}.`,
           timestamp: getTimestamp(),
         });
         break;
@@ -375,14 +375,6 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
           setInput('');
         }
       }
-    } else if (e.key === 'Tab') {
-      e.preventDefault();
-      const current = input.trim().toLowerCase();
-      if (!current) return;
-      const matched = TERMINAL_COMMANDS_HELP.find(c => c.cmd.startsWith(current));
-      if (matched) {
-        setInput(matched.cmd);
-      }
     }
   };
 
@@ -396,16 +388,16 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
   };
 
   return (
-    <section id="terminal" className="bg-[#121620] border border-[#1e2433] rounded-2xl sm:rounded-3xl p-4 sm:p-7 md:p-9 shadow-xl">
+    <section id="terminal" className={`${theme.bgCard} border ${theme.borderCard} rounded-2xl sm:rounded-3xl p-4 sm:p-7 md:p-9 shadow-xl transition-colors duration-300`}>
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-[#1e2433]">
+      <div className={`flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 gap-3 sm:gap-4 pb-3 sm:pb-4 border-b ${theme.borderCard}`}>
         <div>
           <div className={`flex items-center gap-2 font-mono text-xs ${theme.activeText} uppercase tracking-widest mb-1.5 font-bold`}>
             <span className={`w-2 h-2 rounded-sm ${theme.activeBg}`}></span>
             <span>INTERACTIVE_SHELL // CLI_EMULATOR</span>
           </div>
-          <h2 className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight flex items-center">
-            <span>Terminal Console</span>
+          <h2 className={`text-xl xs:text-2xl sm:text-3xl font-extrabold ${theme.textPrimary} tracking-tight flex items-center`}>
+            <span>{isPT ? 'Terminal Console' : 'Terminal Console'}</span>
             <span className={theme.activeText}>.</span>
           </h2>
         </div>
@@ -413,25 +405,25 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
         <div className="flex items-center gap-1.5 sm:gap-2 self-start sm:self-auto">
           <button
             onClick={copyTerminalOutput}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:text-white text-[11px] sm:text-xs font-mono transition-all cursor-pointer shadow-xs min-h-[36px]"
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl ${theme.bgSubCard} border ${theme.borderSubCard} ${theme.textMuted} hover:${theme.textPrimary} text-[11px] sm:text-xs font-mono transition-all cursor-pointer shadow-xs min-h-[36px]`}
             title="Copiar log do terminal"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{copied ? 'COPIADO' : 'COPIAR'}</span>
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+            <span>{copied ? (isPT ? 'COPIADO' : 'COPIED') : (isPT ? 'COPIAR' : 'COPY')}</span>
           </button>
 
           <button
             onClick={() => handleCommand('clear')}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:text-rose-400 text-[11px] sm:text-xs font-mono transition-all cursor-pointer shadow-xs min-h-[36px]"
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl ${theme.bgSubCard} border ${theme.borderSubCard} ${theme.textMuted} hover:text-rose-500 text-[11px] sm:text-xs font-mono transition-all cursor-pointer shadow-xs min-h-[36px]`}
             title="Limpar terminal"
           >
             <Trash2 className="w-3.5 h-3.5" />
-            <span>LIMPAR</span>
+            <span>{isPT ? 'LIMPAR' : 'CLEAR'}</span>
           </button>
 
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-2 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:text-white transition-all cursor-pointer shadow-xs min-h-[36px] min-w-[36px] flex items-center justify-center"
+            className={`p-2 rounded-xl ${theme.bgSubCard} border ${theme.borderSubCard} ${theme.textMuted} hover:${theme.textPrimary} transition-all cursor-pointer shadow-xs min-h-[36px] min-w-[36px] flex items-center justify-center`}
             title={isExpanded ? 'Diminuir tamanho' : 'Expandir terminal'}
           >
             {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -440,12 +432,12 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
       </div>
 
       {/* Terminal Main Window */}
-      <div className={`bg-[#0a0d14] border border-[#1e2433] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 ${
+      <div className={`bg-black/90 border ${theme.borderCard} rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 ${
         isExpanded ? 'h-[520px] sm:h-[650px]' : 'h-[360px] sm:h-[440px]'
       } flex flex-col relative scanline`}>
         
         {/* Terminal Header Bar */}
-        <div className="bg-[#121620] px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-[#1e2433] flex items-center justify-between font-mono text-xs text-slate-400 select-none">
+        <div className={`bg-[#121620] px-3.5 sm:px-4 py-2.5 sm:py-3 border-b ${theme.borderCard} flex items-center justify-between font-mono text-xs text-slate-400 select-none`}>
           <div className="flex items-center gap-2 min-w-0">
             <div className="flex items-center gap-1.5 shrink-0">
               <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#ef4444]"></span>
@@ -504,7 +496,7 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
         </div>
 
         {/* Terminal Input Bar */}
-        <div className="p-2 sm:p-3 bg-[#121620] border-t border-[#1e2433] flex items-center gap-1.5 sm:gap-2">
+        <div className={`p-2 sm:p-3 bg-[#121620] border-t ${theme.borderCard} flex items-center gap-1.5 sm:gap-2`}>
           <span className={`${theme.activeText} font-mono text-[11px] sm:text-xs font-bold shrink-0 select-none`}>
             $
           </span>
@@ -530,7 +522,7 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
         </div>
 
         {/* Quick Commands Quickbar */}
-        <div className="bg-[#0c0e14] px-2.5 sm:px-3 py-2 border-t border-[#1e2433] flex items-center gap-1.5 overflow-x-auto text-[10px] sm:text-[11px] font-mono text-slate-400 no-scrollbar">
+        <div className={`bg-black/70 px-2.5 sm:px-3 py-2 border-t ${theme.borderCard} flex items-center gap-1.5 overflow-x-auto text-[10px] sm:text-[11px] font-mono text-slate-400 no-scrollbar`}>
           <span className="text-slate-500 shrink-0 flex items-center gap-1 text-[10px]">
             <Command className="w-3 h-3" />
           </span>
@@ -538,7 +530,7 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
             <button
               key={qCmd}
               onClick={() => handleCommand(qCmd)}
-              className={`px-2 py-1 rounded-lg bg-[#181d2a] hover:bg-[#22293b] text-slate-300 hover:${theme.activeText} border border-[#272f42] transition-all whitespace-nowrap cursor-pointer min-h-[28px]`}
+              className={`px-2 py-1 rounded-lg ${theme.bgSubCard} hover:${theme.bgCard} text-slate-300 hover:${theme.activeText} border ${theme.borderSubCard} transition-all whitespace-nowrap cursor-pointer min-h-[28px]`}
             >
               {qCmd}
             </button>

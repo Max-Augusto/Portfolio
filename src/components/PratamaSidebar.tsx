@@ -1,16 +1,20 @@
 import React from 'react';
 import { 
   User, 
-  FolderGit2, 
+  Layers, 
   FileText, 
+  FolderGit2, 
+  Cpu, 
+  Network, 
   Terminal, 
   Mail, 
-  Layers, 
-  Cpu,
-  Network,
-  Check
+  Download,
+  Sun,
+  Moon,
+  Globe
 } from 'lucide-react';
 import { useTheme, AccentColor } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 
 interface PratamaSidebarProps {
   activeSection: string;
@@ -23,95 +27,123 @@ export const PratamaSidebar: React.FC<PratamaSidebarProps> = ({
   onSelectSection,
   onOpenResume,
 }) => {
-  const { accentColor, setAccentColor, theme } = useTheme();
+  const { accentColor, setAccentColor, theme, mode, toggleMode, isDark } = useTheme();
+  const { language, setLanguage, isPT, t } = useLanguage();
 
-  const colorSwatches: { id: AccentColor; label: string; hex: string; bg: string }[] = [
-    { id: 'blue', label: 'Cobalt Blue', hex: '#3b82f6', bg: 'bg-[#3b82f6]' },
-    { id: 'cyan', label: 'Cyber Cyan', hex: '#06b6d4', bg: 'bg-[#06b6d4]' },
-    { id: 'amber', label: 'Amber Gold', hex: '#eab308', bg: 'bg-[#eab308]' },
-    { id: 'rose', label: 'Coral Rose', hex: '#f43f5e', bg: 'bg-[#f43f5e]' },
+  const sections = [
+    { id: 'about', label: t('nav.about'), icon: User },
+    { id: 'what-i-do', label: t('nav.what_i_do'), icon: Layers },
+    { id: 'experience', label: t('nav.experience'), icon: FileText },
+    { id: 'projects', label: t('nav.projects'), icon: FolderGit2 },
+    { id: 'skills', label: t('nav.skills'), icon: Cpu },
+    { id: 'topology', label: t('nav.topology'), icon: Network },
+    { id: 'terminal', label: t('nav.terminal'), icon: Terminal },
+    { id: 'contact', label: t('nav.contact'), icon: Mail },
   ];
 
-  const navItems = [
-    { id: 'about', label: 'ABOUT', icon: User },
-    { id: 'what-i-do', label: 'WHAT I DO', icon: Layers },
-    { id: 'experience', label: 'EXPERIENCE', icon: FileText },
-    { id: 'projects', label: 'PROJECTS', icon: FolderGit2 },
-    { id: 'skills', label: 'SKILLS', icon: Cpu },
-    { id: 'topology', label: 'TOPOLOGIA & LAB', icon: Network },
-    { id: 'terminal', label: 'TERMINAL', icon: Terminal },
-    { id: 'contact', label: 'CONTACT', icon: Mail },
+  const colorSwatches: { id: AccentColor; label: string; bg: string }[] = [
+    { id: 'blue', label: 'Cobalt Blue', bg: 'bg-[#3b82f6]' },
+    { id: 'cyan', label: 'Cyber Cyan', bg: 'bg-[#06b6d4]' },
+    { id: 'amber', label: 'Amber Gold', bg: 'bg-[#eab308]' },
+    { id: 'rose', label: 'Coral Rose', bg: 'bg-[#f43f5e]' },
   ];
 
   return (
-    <aside className="w-full lg:w-48 xl:w-52 shrink-0 flex flex-col gap-3">
-      {/* 4 Colored Style Blocks (Pratama Accent Swatches Theme Switcher) */}
-      <div className="bg-[#121620] border border-[#1e2433] rounded-2xl p-3 flex flex-col gap-2 shadow-lg">
-        <div className="flex items-center justify-between gap-2">
-          {colorSwatches.map((swatch) => {
-            const isSelected = accentColor === swatch.id;
+    <aside className={`w-full lg:w-64 ${theme.bgCard} border ${theme.borderCard} rounded-3xl p-5 shadow-2xl flex flex-col justify-between gap-6 transition-all duration-300`}>
+      
+      {/* Navigation Links */}
+      <div>
+        <div className="flex items-center justify-between pb-3 mb-2 border-b border-slate-700/30">
+          <div className="text-[11px] font-mono uppercase tracking-widest text-slate-400 font-bold">
+            // CONSOLE NAV
+          </div>
+          {/* Light/Dark & Language Quick Badges */}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={toggleMode}
+              className={`p-1 rounded-lg ${theme.bgSubCard} border ${theme.borderSubCard} ${theme.textSecondary} hover:${theme.textPrimary} transition-colors text-xs`}
+              title={isDark ? 'Modo Claro' : 'Modo Escuro'}
+            >
+              {isDark ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5 text-blue-600" />}
+            </button>
+            <button
+              onClick={() => setLanguage(isPT ? 'en' : 'pt')}
+              className={`px-1.5 py-0.5 rounded-lg ${theme.bgSubCard} border ${theme.borderSubCard} ${theme.textPrimary} text-[10px] font-bold font-mono hover:${theme.activeText}`}
+              title="Alternar Idioma"
+            >
+              {isPT ? 'PT' : 'EN'}
+            </button>
+          </div>
+        </div>
+
+        <nav className="space-y-1" aria-label="Sidebar navigation">
+          {sections.map((sec, idx) => {
+            const Icon = sec.icon;
+            const isActive = activeSection === sec.id;
             return (
               <button
-                key={swatch.id}
-                onClick={() => setAccentColor(swatch.id)}
-                className={`relative w-8 h-8 rounded-lg ${swatch.bg} flex items-center justify-center transition-all duration-200 cursor-pointer ${
-                  isSelected 
-                    ? 'scale-110 ring-2 ring-white/80 ring-offset-2 ring-offset-[#121620] shadow-[0_0_12px_rgba(255,255,255,0.4)]' 
-                    : 'opacity-80 hover:opacity-100 hover:scale-105'
+                key={sec.id}
+                onClick={() => onSelectSection(sec.id)}
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-mono text-xs transition-all duration-200 cursor-pointer group ${
+                  isActive 
+                    ? `${theme.bgSubCard} ${theme.activeText} font-bold border ${theme.activeBadgeBorder} ${theme.activeGlow}` 
+                    : `${theme.textSecondary} hover:${theme.textPrimary} hover:${theme.bgSubCard}`
                 }`}
-                title={`Mudar tema para ${swatch.label}`}
-                aria-label={`Tema ${swatch.label}`}
               >
-                {isSelected && (
-                  <Check className="w-4 h-4 text-white drop-shadow-md stroke-[2.5]" />
-                )}
+                <div className="flex items-center gap-3">
+                  <Icon className={`w-4 h-4 transition-colors ${isActive ? theme.activeText : 'text-slate-400 group-hover:text-slate-200'}`} />
+                  <span className="capitalize">{sec.label}</span>
+                </div>
+                <span className={`text-[10px] font-mono ${isActive ? theme.activeText : 'text-slate-500'}`}>
+                  0{idx + 1}
+                </span>
               </button>
             );
           })}
+        </nav>
+      </div>
+
+      {/* Resume CTA & Theme Controls */}
+      <div className={`space-y-4 pt-4 border-t ${theme.borderCard}`}>
+        {/* Quick Resume Button */}
+        <button
+          onClick={onOpenResume}
+          className={`w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl ${theme.bgSubCard} hover:${theme.bgCard} border ${theme.borderSubCard} hover:border-slate-400 ${theme.textPrimary} font-mono text-xs transition-all shadow-xs cursor-pointer group`}
+        >
+          <Download className={`w-3.5 h-3.5 ${theme.textMuted} group-hover:${theme.activeText} transition-colors`} />
+          <span className="font-semibold">{t('header.download_cv')}</span>
+        </button>
+
+        {/* Color Palette Switcher */}
+        <div>
+          <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-2">
+            <span>{t('header.theme_title')}</span>
+            <span className={`${theme.activeText} font-bold`}>{theme.label}</span>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2">
+            {colorSwatches.map((swatch) => (
+              <button
+                key={swatch.id}
+                onClick={() => setAccentColor(swatch.id)}
+                className={`h-7 rounded-lg ${swatch.bg} transition-all duration-200 cursor-pointer ${
+                  accentColor === swatch.id
+                    ? 'ring-2 ring-white/90 ring-offset-2 ring-offset-slate-900 scale-105 shadow-md'
+                    : 'opacity-70 hover:opacity-100'
+                }`}
+                title={swatch.label}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Status Indicator */}
+        <div className={`flex items-center gap-2 px-3 py-2 rounded-xl ${theme.bgSubCard} border ${theme.borderSubCard} text-[10px] font-mono ${theme.textMuted}`}>
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span className="truncate">SRE OPERATIONAL · BH</span>
         </div>
       </div>
 
-      {/* Navigation List Menu */}
-      <nav className="bg-[#121620] border border-[#1e2433] rounded-2xl p-2.5 flex flex-col gap-1.5 shadow-lg">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeSection === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => onSelectSection(item.id)}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs font-semibold tracking-wider transition-all duration-200 cursor-pointer ${
-                isActive
-                  ? `bg-[#1a2030] ${theme.activeText} border ${theme.activeBorder} ${theme.activeGlow}`
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-[#161b27] border border-transparent'
-              }`}
-            >
-              <div className="flex items-center gap-2.5">
-                <Icon className={`w-4 h-4 ${isActive ? theme.activeText : 'text-slate-500'}`} />
-                <span>{item.label}</span>
-              </div>
-              
-              {/* Dot indicator */}
-              <span
-                className={`w-1.5 h-1.5 rounded-full transition-all ${
-                  isActive ? 'bg-emerald-400 shadow-[0_0_6px_#10b981]' : 'bg-slate-700'
-                }`}
-              ></span>
-            </button>
-          );
-        })}
-
-        {/* Quick CV Trigger */}
-        <div className="pt-2 mt-1 border-t border-[#1e2433]/70">
-          <button
-            onClick={onOpenResume}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#181d2a] hover:bg-[#1f2638] text-slate-300 hover:text-white font-mono text-xs font-semibold border border-[#272f42] hover:border-slate-600 transition-all cursor-pointer shadow-xs"
-          >
-            <FileText className="w-3.5 h-3.5 text-amber-400" />
-            <span>CV MODAL</span>
-          </button>
-        </div>
-      </nav>
     </aside>
   );
 };

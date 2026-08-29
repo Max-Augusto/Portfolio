@@ -5,61 +5,64 @@ import {
   Mail, 
   ArrowUp
 } from 'lucide-react';
-import { PERSONAL_INFO } from '../data/portfolioData';
+import { getPersonalInfo } from '../data/localizedData';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Footer: React.FC = () => {
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
+  const { language, isPT, t } = useLanguage();
+  const personalInfo = getPersonalInfo(language);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <footer className="border-t border-[#1e2433] bg-[#0c0e14] py-10 px-4 sm:px-6 font-mono text-xs text-slate-400 mt-12">
+    <footer className={`border-t ${theme.borderCard} ${theme.bgCard} py-8 sm:py-10 px-4 sm:px-6 font-mono text-xs ${theme.textMuted} mt-12 transition-colors duration-300`}>
       <div className="max-w-7xl mx-auto flex flex-col gap-6">
         
         {/* Top footer row */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6 border-b border-[#1e2433]">
+        <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 pb-6 border-b ${theme.borderCard}`}>
           <div className="flex items-center gap-3">
-            <div className={`w-8 h-8 rounded-xl bg-[#181d2a] border ${theme.activeBorder} flex items-center justify-center ${theme.activeText} font-bold text-xs shadow-sm`}>
+            <div className={`w-8 h-8 rounded-xl ${theme.bgSubCard} border ${theme.activeBorder} flex items-center justify-center ${theme.activeText} font-bold text-xs shadow-xs`}>
               MA
             </div>
             <div>
-              <div className="font-bold text-slate-200 tracking-tight">
+              <div className={`font-bold ${theme.textPrimary} tracking-tight`}>
                 Max Augusto
               </div>
-              <div className="text-[10px] text-slate-500">
-                Support Analyst • Backend Engineer • DevOps &amp; Networks
+              <div className={`text-[10px] ${theme.textMuted}`}>
+                {isPT ? 'Suporte N2 • Engenheiro Backend • DevOps & Redes' : 'Tier 2 Support • Backend Engineer • DevOps & Networks'}
               </div>
             </div>
           </div>
 
           {/* Social Links */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <a
-              href={PERSONAL_INFO.github}
+              href={personalInfo.github}
               target="_blank"
               rel="noopener noreferrer"
-              className={`p-2 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:${theme.activeText} hover:bg-[#1f2638] transition-all shadow-xs`}
+              className={`p-2 rounded-xl ${theme.bgSubCard} border ${theme.borderSubCard} ${theme.textMuted} hover:${theme.activeText} hover:${theme.bgCard} transition-all shadow-xs`}
               title="GitHub"
             >
               <Github className="w-4 h-4" />
             </a>
 
             <a
-              href={PERSONAL_INFO.linkedin}
+              href={personalInfo.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className={`p-2 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:${theme.activeText} hover:bg-[#1f2638] transition-all shadow-xs`}
+              className={`p-2 rounded-xl ${theme.bgSubCard} border ${theme.borderSubCard} ${theme.textMuted} hover:${theme.activeText} hover:${theme.bgCard} transition-all shadow-xs`}
               title="LinkedIn"
             >
               <Linkedin className="w-4 h-4" />
             </a>
 
             <a
-              href={`mailto:${PERSONAL_INFO.email}`}
-              className={`p-2 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:${theme.activeText} hover:bg-[#1f2638] transition-all shadow-xs`}
+              href={`mailto:${personalInfo.email}`}
+              className={`p-2 rounded-xl ${theme.bgSubCard} border ${theme.borderSubCard} ${theme.textMuted} hover:${theme.activeText} hover:${theme.bgCard} transition-all shadow-xs`}
               title="E-mail"
             >
               <Mail className="w-4 h-4" />
@@ -67,18 +70,18 @@ export const Footer: React.FC = () => {
 
             <button
               onClick={scrollToTop}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#181d2a] hover:bg-[#1f2638] text-slate-200 border border-[#272f42] hover:${theme.activeBorder} transition-all cursor-pointer text-xs font-semibold`}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl ${theme.bgSubCard} hover:${theme.bgCard} ${theme.textPrimary} border ${theme.borderSubCard} hover:${theme.activeBorder} transition-all cursor-pointer text-xs font-semibold`}
               title="Voltar ao topo"
             >
               <ArrowUp className={`w-3.5 h-3.5 ${theme.activeText}`} />
-              <span>TOPO</span>
+              <span>{isPT ? 'TOPO' : 'TOP'}</span>
             </button>
           </div>
         </div>
 
         {/* Bottom system telemetry info */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
-          <div className="flex items-center gap-2">
+        <div className={`flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] ${theme.textMuted}`}>
+          <div className="flex flex-wrap items-center gap-2">
             <span className={`w-2 h-2 rounded-full ${theme.activeBg} animate-pulse`}></span>
             <span>SYSTEM CONSOLE: OPERATIONAL</span>
             <span>•</span>
@@ -88,7 +91,7 @@ export const Footer: React.FC = () => {
           </div>
 
           <div className="text-center md:text-right">
-            © {new Date().getFullYear()} Max Augusto. Portfolio Dark Edition.
+            © {new Date().getFullYear()} Max Augusto. Systems & Infrastructure.
           </div>
         </div>
 
