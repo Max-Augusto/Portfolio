@@ -7,6 +7,7 @@ import {
   Mail, 
   Layers, 
   Cpu,
+  Network,
   Check
 } from 'lucide-react';
 import { useTheme, AccentColor } from '../context/ThemeContext';
@@ -37,6 +38,7 @@ export const PratamaSidebar: React.FC<PratamaSidebarProps> = ({
     { id: 'experience', label: 'EXPERIENCE', icon: FileText },
     { id: 'projects', label: 'PROJECTS', icon: FolderGit2 },
     { id: 'skills', label: 'SKILLS', icon: Cpu },
+    { id: 'topology', label: 'TOPOLOGIA & LAB', icon: Network },
     { id: 'terminal', label: 'TERMINAL', icon: Terminal },
     { id: 'contact', label: 'CONTACT', icon: Mail },
   ];

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { PratamaHeader } from './components/PratamaHeader';
@@ -9,8 +9,10 @@ import { WhatIDoSection } from './components/WhatIDoSection';
 import { ExperienceSection } from './components/ExperienceSection';
 import { ProjectsSection } from './components/ProjectsSection';
 import { SkillsMatrix } from './components/SkillsMatrix';
+import { NetworkTopologyWidget } from './components/NetworkTopologyWidget';
 import { TerminalWidget } from './components/TerminalWidget';
 import { ContactSection } from './components/ContactSection';
+import { CommandPalette } from './components/CommandPalette';
 import { ResumeModal } from './components/ResumeModal';
 import { Footer } from './components/Footer';
 import { ChevronLeft, ChevronRight, Hash } from 'lucide-react';
@@ -21,12 +23,14 @@ const SECTIONS = [
   { id: 'experience', label: 'EXPERIENCE', title: 'Experiência' },
   { id: 'projects', label: 'PROJECTS', title: 'Projetos' },
   { id: 'skills', label: 'SKILLS', title: 'Habilidades' },
-  { id: 'terminal', label: 'TERMINAL', title: 'Console Terminal' },
+  { id: 'topology', label: 'TOPOLOGIA & LAB', title: 'Simulador de Rede & Diagnóstico N2' },
+  { id: 'terminal', label: 'TERMINAL', title: 'Console Terminal Interativo' },
   { id: 'contact', label: 'CONTACT', title: 'Contato' },
 ];
 
 const MainPortfolio: React.FC = () => {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('about');
   const { theme } = useTheme();
 
@@ -39,6 +43,34 @@ const MainPortfolio: React.FC = () => {
     setActiveSection(sectionId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Global Keyboard Shortcuts (Cmd+K / Ctrl+K, Arrow keys, 1-8 for sections)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept if typing in an input or textarea
+      const target = e.target as HTMLElement;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+        return;
+      }
+
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen(prev => !prev);
+      } else if (e.key === 'ArrowLeft' && prevSection) {
+        handleSelectSection(prevSection.id);
+      } else if (e.key === 'ArrowRight' && nextSection) {
+        handleSelectSection(nextSection.id);
+      } else if (['1', '2', '3', '4', '5', '6', '7', '8'].includes(e.key)) {
+        const idx = parseInt(e.key, 10) - 1;
+        if (SECTIONS[idx]) {
+          handleSelectSection(SECTIONS[idx].id);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [prevSection, nextSection]);
 
   const renderActivePage = () => {
     switch (activeSection) {
@@ -57,8 +89,10 @@ const MainPortfolio: React.FC = () => {
         return <ProjectsSection />;
       case 'skills':
         return <SkillsMatrix />;
+      case 'topology':
+        return <NetworkTopologyWidget />;
       case 'terminal':
-        return <TerminalWidget />;
+        return <TerminalWidget onNavigate={(sec) => handleSelectSection(sec)} />;
       case 'contact':
         return <ContactSection />;
       default:
@@ -101,7 +135,10 @@ const MainPortfolio: React.FC = () => {
       />
 
       {/* Pratama Console Header */}
-      <PratamaHeader onOpenResume={() => setIsResumeOpen(true)} />
+      <PratamaHeader 
+        onOpenResume={() => setIsResumeOpen(true)} 
+        onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+      />
 
       {/* Pratama Main 2-Column Body Layout */}
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 pt-4 pb-12 flex flex-col lg:flex-row gap-6 items-start">
@@ -212,6 +249,14 @@ const MainPortfolio: React.FC = () => {
       <ResumeModal 
         isOpen={isResumeOpen} 
         onClose={() => setIsResumeOpen(false)} 
+      />
+
+      {/* Global Command Palette (Cmd+K / Ctrl+K) */}
+      <CommandPalette 
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onNavigate={(sec) => handleSelectSection(sec)}
+        onOpenResume={() => setIsResumeOpen(true)}
       />
 
       {/* SRE Footer */}
