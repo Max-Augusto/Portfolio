@@ -52,27 +52,27 @@ export const SkillsMatrix: React.FC = () => {
   };
 
   return (
-    <section id="skills" className="bg-[#121620] border border-[#1e2433] rounded-3xl p-6 sm:p-9 shadow-xl">
+    <section id="skills" className="bg-[#121620] border border-[#1e2433] rounded-2xl sm:rounded-3xl p-4 sm:p-7 md:p-9 shadow-xl">
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4 pb-4 border-b border-[#1e2433]">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 sm:mb-8 gap-3 sm:gap-4 pb-4 border-b border-[#1e2433]">
         <div>
           <div className={`flex items-center gap-2 font-mono text-xs ${theme.activeText} uppercase tracking-wider mb-1.5 font-bold`}>
             <span className={`w-2 h-2 rounded-sm ${theme.activeBg}`}></span>
             <span>CAPABILITY_INDEX // TECH_STACK</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight flex items-center">
+          <h2 className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight flex items-center">
             <span>Skills &amp; Capabilities</span>
             <span className={theme.activeText}>.</span>
           </h2>
         </div>
 
-        <div className="text-xs font-mono text-slate-400 bg-[#181d2a] px-3 py-1.5 rounded-xl border border-[#272f42] shadow-sm">
+        <div className="text-xs font-mono text-slate-400 bg-[#181d2a] px-2.5 sm:px-3 py-1.5 rounded-xl border border-[#272f42] shadow-sm self-start sm:self-auto">
           <span>VERIFIED SYS_STACK v2.6</span>
         </div>
       </div>
 
       {/* Category selector pills */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 mb-5 sm:mb-6">
         {SKILL_CATEGORIES.map((cat, idx) => {
           const Icon = getCategoryIcon(cat.icon);
           const isSelected = activeCategoryIndex === idx;
@@ -81,15 +81,15 @@ export const SkillsMatrix: React.FC = () => {
             <button
               key={idx}
               onClick={() => setActiveCategoryIndex(idx)}
-              className={`p-4 rounded-2xl border text-left transition-all duration-300 flex items-center justify-between cursor-pointer shadow-md ${
+              className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-left transition-all duration-300 flex items-center justify-between cursor-pointer shadow-md min-h-[56px] ${
                 isSelected
                   ? `bg-[#181d2a] ${theme.activeBadgeBorder} ${theme.activeGlow} text-slate-100`
                   : 'bg-[#181d2a]/50 border-[#242b3d] text-slate-400 hover:bg-[#181d2a] hover:border-slate-600 hover:text-slate-200'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <div className={`p-2.5 rounded-xl ${isSelected ? theme.activeTagBg : 'bg-[#121620] text-slate-500'}`}>
-                  <Icon className="w-5 h-5" />
+              <div className="flex items-center gap-2.5 sm:gap-3">
+                <div className={`p-2 sm:p-2.5 rounded-xl ${isSelected ? theme.activeTagBg : 'bg-[#121620] text-slate-500'}`}>
+                  <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
                   <div className="text-xs font-mono font-bold">
@@ -117,25 +117,25 @@ export const SkillsMatrix: React.FC = () => {
           initial="hidden"
           animate="visible"
           exit="hidden"
-          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4"
         >
           {SKILL_CATEGORIES[activeCategoryIndex].skills.map((skill, sIdx) => (
             <motion.div
               key={sIdx}
               variants={cardVariants}
-              className="bg-[#181d2a] border border-[#242b3d] hover:border-slate-600 rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 shadow-md group"
+              className="bg-[#181d2a] border border-[#242b3d] hover:border-slate-600 rounded-xl sm:rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 shadow-md group"
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <h4 className={`text-base font-bold text-slate-100 group-hover:${theme.activeText} transition-colors`}>
+                  <h4 className={`text-sm sm:text-base font-bold text-slate-100 group-hover:${theme.activeText} transition-colors`}>
                     {skill.name}
                   </h4>
-                  <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#121620] ${theme.activeText} border ${theme.activeBorder}`}>
+                  <span className={`text-[9px] sm:text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#121620] ${theme.activeText} border ${theme.activeBorder}`}>
                     {skill.level}
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-300 leading-relaxed mb-4 font-normal">
+                <p className="text-xs text-slate-300 leading-relaxed mb-3 sm:mb-4 font-normal">
                   {skill.description}
                 </p>
               </div>

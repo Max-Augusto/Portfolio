@@ -14,6 +14,7 @@ import { TerminalWidget } from './components/TerminalWidget';
 import { ContactSection } from './components/ContactSection';
 import { CommandPalette } from './components/CommandPalette';
 import { ResumeModal } from './components/ResumeModal';
+import { MobileBottomBar } from './components/MobileBottomBar';
 import { Footer } from './components/Footer';
 import { ChevronLeft, ChevronRight, Hash } from 'lucide-react';
 
@@ -143,8 +144,8 @@ const MainPortfolio: React.FC = () => {
       {/* Pratama Main 2-Column Body Layout */}
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 pt-4 pb-12 flex flex-col lg:flex-row gap-6 items-start">
         
-        {/* Sticky Left Sidebar Navigation with Color Palette Blocks */}
-        <div className="w-full lg:w-auto lg:sticky lg:top-6 z-20">
+        {/* Sticky Left Sidebar Navigation with Color Palette Blocks - Hidden on mobile, visible on desktop */}
+        <div className="hidden lg:block w-full lg:w-auto lg:sticky lg:top-6 z-20">
           <PratamaSidebar 
             activeSection={activeSection}
             onSelectSection={handleSelectSection}
@@ -260,7 +261,15 @@ const MainPortfolio: React.FC = () => {
       />
 
       {/* SRE Footer */}
-      <Footer />
+      <div className="pb-16 lg:pb-0">
+        <Footer />
+      </div>
+
+      {/* Mobile Floating Bottom Bar */}
+      <MobileBottomBar 
+        activeSection={activeSection}
+        onSelectSection={handleSelectSection}
+      />
     </div>
   );
 };

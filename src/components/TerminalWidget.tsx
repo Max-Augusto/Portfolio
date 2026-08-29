@@ -396,42 +396,42 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
   };
 
   return (
-    <section id="terminal" className="bg-[#121620] border border-[#1e2433] rounded-3xl p-6 sm:p-9 shadow-xl">
+    <section id="terminal" className="bg-[#121620] border border-[#1e2433] rounded-2xl sm:rounded-3xl p-4 sm:p-7 md:p-9 shadow-xl">
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-4 pb-4 border-b border-[#1e2433]">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-4 sm:mb-6 gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-[#1e2433]">
         <div>
           <div className={`flex items-center gap-2 font-mono text-xs ${theme.activeText} uppercase tracking-widest mb-1.5 font-bold`}>
             <span className={`w-2 h-2 rounded-sm ${theme.activeBg}`}></span>
             <span>INTERACTIVE_SHELL // CLI_EMULATOR</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight flex items-center">
+          <h2 className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight flex items-center">
             <span>Terminal Console</span>
             <span className={theme.activeText}>.</span>
           </h2>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 self-start sm:self-auto">
           <button
             onClick={copyTerminalOutput}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:text-white text-xs font-mono transition-all cursor-pointer shadow-xs"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:text-white text-[11px] sm:text-xs font-mono transition-all cursor-pointer shadow-xs min-h-[36px]"
             title="Copiar log do terminal"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{copied ? 'LOG COPIADO' : 'COPIAR LOG'}</span>
+            <span>{copied ? 'COPIADO' : 'COPIAR'}</span>
           </button>
 
           <button
             onClick={() => handleCommand('clear')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:text-rose-400 text-xs font-mono transition-all cursor-pointer shadow-xs"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:text-rose-400 text-[11px] sm:text-xs font-mono transition-all cursor-pointer shadow-xs min-h-[36px]"
             title="Limpar terminal"
           >
             <Trash2 className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">LIMPAR</span>
+            <span>LIMPAR</span>
           </button>
 
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-2 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:text-white transition-all cursor-pointer shadow-xs"
+            className="p-2 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:text-white transition-all cursor-pointer shadow-xs min-h-[36px] min-w-[36px] flex items-center justify-center"
             title={isExpanded ? 'Diminuir tamanho' : 'Expandir terminal'}
           >
             {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -440,24 +440,24 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
       </div>
 
       {/* Terminal Main Window */}
-      <div className={`bg-[#0a0d14] border border-[#1e2433] rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 ${
-        isExpanded ? 'h-[650px]' : 'h-[440px]'
+      <div className={`bg-[#0a0d14] border border-[#1e2433] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 ${
+        isExpanded ? 'h-[520px] sm:h-[650px]' : 'h-[360px] sm:h-[440px]'
       } flex flex-col relative scanline`}>
         
         {/* Terminal Header Bar */}
-        <div className="bg-[#121620] px-4 py-3 border-b border-[#1e2433] flex items-center justify-between font-mono text-xs text-slate-400 select-none">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#ef4444]"></span>
-              <span className="w-3 h-3 rounded-full bg-[#f59e0b]"></span>
-              <span className="w-3 h-3 rounded-full bg-[#10b981]"></span>
+        <div className="bg-[#121620] px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-[#1e2433] flex items-center justify-between font-mono text-xs text-slate-400 select-none">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#ef4444]"></span>
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#f59e0b]"></span>
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#10b981]"></span>
             </div>
-            <span className="ml-2 text-slate-200 font-semibold text-[11px]">
-              bash — max@operator-node: ~ (pt-BR / UTF-8)
+            <span className="ml-1 sm:ml-2 text-slate-200 font-semibold text-[10px] sm:text-[11px] truncate">
+              bash — max@operator: ~
             </span>
           </div>
 
-          <div className="hidden sm:flex items-center gap-3 text-[10px] text-slate-500">
+          <div className="hidden sm:flex items-center gap-3 text-[10px] text-slate-500 shrink-0">
             <span>TAB: AUTOCOMPLETE</span>
             <span>▲▼: HISTÓRICO</span>
           </div>
@@ -467,7 +467,7 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
         <div 
           ref={logsContainerRef}
           onClick={() => inputRef.current?.focus()}
-          className={`flex-1 p-4 sm:p-5 overflow-y-auto font-mono text-xs sm:text-sm space-y-2.5 terminal-scroll cursor-text transition-colors duration-300 ${
+          className={`flex-1 p-3 sm:p-5 overflow-y-auto font-mono text-xs sm:text-sm space-y-2 terminal-scroll cursor-text transition-colors duration-300 ${
             isMatrixMode ? 'bg-[#030d06] text-emerald-400 font-semibold' : ''
           }`}
         >
@@ -480,10 +480,10 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
 
             if (log.type === 'input') {
               return (
-                <div key={log.id} className="flex items-start gap-2 text-slate-100">
-                  <span className={`${isMatrixMode ? 'text-emerald-500' : theme.activeText} font-bold select-none`}>operator@max:~$</span>
-                  <span className={isMatrixMode ? 'text-emerald-300 font-bold' : 'text-cyan-400 font-semibold'}>{log.text}</span>
-                  <span className="text-[10px] text-slate-600 ml-auto select-none">{log.timestamp}</span>
+                <div key={log.id} className="flex items-start gap-1.5 sm:gap-2 text-slate-100">
+                  <span className={`${isMatrixMode ? 'text-emerald-500' : theme.activeText} font-bold select-none text-[11px] sm:text-xs shrink-0`}>operator@max:~$</span>
+                  <span className={isMatrixMode ? 'text-emerald-300 font-bold' : `${theme.activeText} font-semibold`}>{log.text}</span>
+                  <span className="text-[9px] sm:text-[10px] text-slate-600 ml-auto select-none hidden xs:inline">{log.timestamp}</span>
                 </div>
               );
             }
@@ -496,7 +496,7 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
             }
 
             return (
-              <div key={log.id} className={`leading-relaxed whitespace-pre-wrap ${textColor}`}>
+              <div key={log.id} className={`leading-relaxed whitespace-pre-wrap text-[11px] sm:text-xs ${textColor}`}>
                 {log.text}
               </div>
             );
@@ -504,9 +504,9 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
         </div>
 
         {/* Terminal Input Bar */}
-        <div className="p-3 bg-[#121620] border-t border-[#1e2433] flex items-center gap-2">
-          <span className={`${theme.activeText} font-mono text-xs sm:text-sm font-bold shrink-0 select-none`}>
-            operator@max:~$
+        <div className="p-2 sm:p-3 bg-[#121620] border-t border-[#1e2433] flex items-center gap-1.5 sm:gap-2">
+          <span className={`${theme.activeText} font-mono text-[11px] sm:text-xs font-bold shrink-0 select-none`}>
+            $
           </span>
           <input
             ref={inputRef}
@@ -514,14 +514,15 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Digite um comando (ex: help, skills, projects, contact)..."
-            className="flex-1 bg-transparent border-none outline-none font-mono text-xs sm:text-sm text-slate-100 placeholder-slate-600 focus:ring-0"
+            placeholder="help, skills, projects, contact..."
+            className="flex-1 bg-transparent border-none outline-none font-mono text-xs sm:text-sm text-slate-100 placeholder-slate-600 focus:ring-0 min-h-[36px]"
             autoComplete="off"
+            autoCapitalize="none"
             spellCheck={false}
           />
           <button
             onClick={() => handleCommand(input)}
-            className={`p-1.5 rounded-lg ${theme.activeBg} text-white font-bold ${theme.activeBgHover} transition-all cursor-pointer shrink-0 shadow-xs`}
+            className={`p-2 rounded-lg ${theme.activeBg} text-white font-bold ${theme.activeBgHover} transition-all cursor-pointer shrink-0 shadow-xs min-h-[36px] min-w-[36px] flex items-center justify-center`}
             title="Executar comando"
           >
             <CornerDownLeft className="w-3.5 h-3.5" />
@@ -529,15 +530,15 @@ export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) =>
         </div>
 
         {/* Quick Commands Quickbar */}
-        <div className="bg-[#0c0e14] px-3 py-2 border-t border-[#1e2433] flex items-center gap-1.5 overflow-x-auto text-[11px] font-mono text-slate-400">
+        <div className="bg-[#0c0e14] px-2.5 sm:px-3 py-2 border-t border-[#1e2433] flex items-center gap-1.5 overflow-x-auto text-[10px] sm:text-[11px] font-mono text-slate-400 no-scrollbar">
           <span className="text-slate-500 shrink-0 flex items-center gap-1 text-[10px]">
-            <Command className="w-3 h-3" /> ATALHOS:
+            <Command className="w-3 h-3" />
           </span>
           {quickCommands.map((qCmd) => (
             <button
               key={qCmd}
               onClick={() => handleCommand(qCmd)}
-              className={`px-2 py-0.5 rounded-lg bg-[#181d2a] hover:bg-[#22293b] text-slate-300 hover:${theme.activeText} border border-[#272f42] transition-all whitespace-nowrap cursor-pointer`}
+              className={`px-2 py-1 rounded-lg bg-[#181d2a] hover:bg-[#22293b] text-slate-300 hover:${theme.activeText} border border-[#272f42] transition-all whitespace-nowrap cursor-pointer min-h-[28px]`}
             >
               {qCmd}
             </button>

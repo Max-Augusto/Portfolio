@@ -61,15 +61,15 @@ export const ProjectsSection: React.FC = () => {
     : PROJECTS.filter(p => p.category === activeCategory);
 
   return (
-    <section id="projects" className="bg-[#121620] border border-[#1e2433] rounded-3xl p-6 sm:p-9 shadow-xl">
+    <section id="projects" className="bg-[#121620] border border-[#1e2433] rounded-2xl sm:rounded-3xl p-4 sm:p-7 md:p-9 shadow-xl">
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4 pb-4 border-b border-[#1e2433]">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 sm:mb-8 gap-3 sm:gap-4 pb-4 border-b border-[#1e2433]">
         <div>
           <div className={`flex items-center gap-2 font-mono text-xs ${theme.activeText} uppercase tracking-wider mb-1.5 font-bold`}>
             <span className={`w-2 h-2 rounded-sm ${theme.activeBg}`}></span>
             <span>REPOSITORIES // RELEASES &amp; BUILDS</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight flex items-center">
+          <h2 className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight flex items-center">
             <span>Featured Projects</span>
             <span className={theme.activeText}>.</span>
           </h2>
@@ -79,7 +79,7 @@ export const ProjectsSection: React.FC = () => {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setShowShieldBadges(!showShieldBadges)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer shadow-sm ${
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border text-[11px] sm:text-xs font-mono transition-all cursor-pointer shadow-sm ${
               showShieldBadges
                 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/40 font-semibold'
                 : 'bg-[#181d2a] text-slate-400 border-[#272f42] hover:text-slate-200'
@@ -87,15 +87,15 @@ export const ProjectsSection: React.FC = () => {
             title="Alternar entre ícones e badges oficiais Shields.io"
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
-            <span>{showShieldBadges ? 'Shields.io Ativo' : 'Badges Shields.io'}</span>
+            <span>{showShieldBadges ? 'Shields.io' : 'Badges'}</span>
           </button>
 
-          <div className="flex items-center gap-1 bg-[#181d2a] p-1 rounded-xl border border-[#272f42] overflow-x-auto max-w-full">
+          <div className="flex items-center gap-1 bg-[#181d2a] p-1 rounded-xl border border-[#272f42] overflow-x-auto max-w-full no-scrollbar">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all whitespace-nowrap cursor-pointer ${
+                className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono transition-all whitespace-nowrap cursor-pointer ${
                   activeCategory === cat.id
                     ? `${theme.activeBg} text-white font-bold shadow-sm`
                     : 'text-slate-400 hover:text-slate-200'
@@ -116,7 +116,7 @@ export const ProjectsSection: React.FC = () => {
           initial="hidden"
           animate="visible"
           exit="hidden"
-          className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5"
+          className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4 lg:gap-5"
         >
           {filteredProjects.map((project) => {
             const isFeatured = project.featured;
@@ -125,16 +125,16 @@ export const ProjectsSection: React.FC = () => {
               <motion.div
                 key={project.id}
                 variants={cardVariants}
-                className={`bg-[#181d2a] border rounded-2xl p-5 sm:p-6 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group shadow-md ${
+                className={`bg-[#181d2a] border rounded-xl sm:rounded-2xl p-4 sm:p-6 flex flex-col justify-between transition-all duration-300 relative overflow-hidden group shadow-md ${
                   isFeatured 
                     ? `${theme.activeBorder} hover:${theme.activeBadgeBorder}` 
                     : 'border-[#242b3d] hover:border-slate-600'
                 }`}
               >
                 {/* Featured Badge */}
-                <div className="flex items-center justify-between gap-2 mb-4">
+                <div className="flex items-center justify-between gap-2 mb-3 sm:mb-4">
                   <div className="flex items-center gap-2">
-                    <span className={`text-[10px] font-mono font-bold uppercase px-2.5 py-0.5 rounded border ${
+                    <span className={`text-[9px] sm:text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded border ${
                       project.status === 'production'
                         ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
                         : theme.activeTagBg
@@ -142,42 +142,42 @@ export const ProjectsSection: React.FC = () => {
                       {project.badge}
                     </span>
                     {project.status === 'production' && (
-                      <span className="flex items-center gap-1 text-[10px] font-mono text-emerald-400 font-bold">
+                      <span className="flex items-center gap-1 text-[9px] sm:text-[10px] font-mono text-emerald-400 font-bold">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                         ONLINE
                       </span>
                     )}
                   </div>
 
-                  <span className="text-[11px] font-mono text-slate-500 uppercase font-semibold">
+                  <span className="text-[10px] sm:text-[11px] font-mono text-slate-500 uppercase font-semibold">
                     {project.category}
                   </span>
                 </div>
 
                 {/* Title & Subtitle */}
                 <div>
-                  <h3 className="text-xl font-bold text-slate-100 group-hover:text-slate-200 transition-colors flex items-center gap-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-100 group-hover:text-slate-200 transition-colors flex items-center gap-2">
                     <span>{project.title}</span>
                   </h3>
-                  <div className={`text-xs font-mono ${theme.activeText} font-medium mt-0.5 mb-3`}>
+                  <div className={`text-xs font-mono ${theme.activeText} font-medium mt-0.5 mb-2.5 sm:mb-3`}>
                     {project.subtitle}
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-5 font-normal">
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4 sm:mb-5 font-normal">
                     {project.description}
                   </p>
 
                   {/* Key Metrics / Specs pill box */}
-                  <div className="bg-[#121620] rounded-xl p-3 border border-[#1e2433] mb-5">
-                    <div className="text-[10px] font-mono uppercase text-slate-400 font-bold mb-2 flex items-center gap-1.5">
+                  <div className="bg-[#121620] rounded-xl p-3 border border-[#1e2433] mb-4 sm:mb-5">
+                    <div className="text-[10px] font-mono uppercase text-slate-400 font-bold mb-1.5 sm:mb-2 flex items-center gap-1.5">
                       <Sparkles className={`w-3 h-3 ${theme.activeText}`} />
                       <span>Destaques Técnicos &amp; Métricas:</span>
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
                       {project.metrics.map((m, mIdx) => (
                         <span
                           key={mIdx}
-                          className="text-[11px] font-mono text-slate-300 flex items-center gap-1.5 bg-[#181d2a] px-2 py-0.5 rounded border border-[#272f42] shadow-xs font-medium"
+                          className="text-[10px] sm:text-[11px] font-mono text-slate-300 flex items-center gap-1 bg-[#181d2a] px-2 py-0.5 rounded border border-[#272f42] shadow-xs font-medium"
                         >
                           <span className={`w-1 h-1 rounded-full ${theme.activeBg}`}></span>
                           {m}
@@ -190,7 +190,7 @@ export const ProjectsSection: React.FC = () => {
                 {/* Action Buttons & Tech Tags */}
                 <div>
                   {/* Tech Tags */}
-                  <div className="flex flex-wrap gap-1.5 mb-5">
+                  <div className="flex flex-wrap gap-1.5 mb-4 sm:mb-5">
                     {project.tags.map((tag, tIdx) => (
                       <TechBadge 
                         key={tIdx} 
@@ -202,10 +202,10 @@ export const ProjectsSection: React.FC = () => {
                   </div>
 
                   {/* Bottom Actions */}
-                  <div className="pt-3 border-t border-[#1e2433] flex items-center justify-between gap-3">
+                  <div className="pt-3 border-t border-[#1e2433] flex flex-wrap items-center justify-between gap-2.5">
                     <button
                       onClick={() => setSelectedProject(project)}
-                      className={`text-xs font-mono text-slate-400 hover:${theme.activeText} flex items-center gap-1.5 cursor-pointer font-medium transition-colors`}
+                      className={`text-xs font-mono text-slate-400 hover:${theme.activeText} flex items-center gap-1.5 cursor-pointer font-medium transition-colors min-h-[36px]`}
                     >
                       <Code2 className={`w-3.5 h-3.5 ${theme.activeText}`} />
                       <span>Ver Arquitetura</span>
@@ -217,7 +217,7 @@ export const ProjectsSection: React.FC = () => {
                           href={project.liveUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${theme.activeBg} text-white font-mono text-xs font-bold ${theme.activeBgHover} transition-all shadow-sm`}
+                          className={`flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-lg ${theme.activeBg} text-white font-mono text-xs font-bold ${theme.activeBgHover} transition-all shadow-sm min-h-[36px]`}
                         >
                           <span>Visitar SaaS</span>
                           <ExternalLink className="w-3 h-3" />
@@ -228,7 +228,7 @@ export const ProjectsSection: React.FC = () => {
                         href={project.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#121620] border border-[#272f42] text-slate-300 hover:text-white hover:bg-[#181d2a] font-mono text-xs transition-all shadow-xs"
+                        className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#121620] border border-[#272f42] text-slate-300 hover:text-white hover:bg-[#181d2a] font-mono text-xs transition-all shadow-xs min-h-[36px]"
                       >
                         <Github className="w-3.5 h-3.5" />
                         <span>Código</span>
