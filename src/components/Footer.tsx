@@ -1,37 +1,36 @@
 import React from 'react';
 import { 
-  Terminal, 
   Github, 
   Linkedin, 
   Mail, 
-  Heart, 
-  Activity, 
-  ArrowUp,
-  ShieldCheck
+  ArrowUp
 } from 'lucide-react';
 import { PERSONAL_INFO } from '../data/portfolioData';
+import { useTheme } from '../context/ThemeContext';
 
 export const Footer: React.FC = () => {
+  const { theme } = useTheme();
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <footer className="border-t border-[#1e293b] bg-[#0a0f1d] py-10 px-4 sm:px-6 font-mono text-xs text-[#94a3b8]">
+    <footer className="border-t border-[#1e2433] bg-[#0c0e14] py-10 px-4 sm:px-6 font-mono text-xs text-slate-400 mt-12">
       <div className="max-w-7xl mx-auto flex flex-col gap-6">
         
         {/* Top footer row */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6 border-b border-[#1e293b]/70">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6 border-b border-[#1e2433]">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#0f172a] border border-[#10b981]/40 flex items-center justify-center text-[#10b981] font-bold text-xs">
+            <div className={`w-8 h-8 rounded-xl bg-[#181d2a] border ${theme.activeBorder} flex items-center justify-center ${theme.activeText} font-bold text-xs shadow-sm`}>
               MA
             </div>
             <div>
-              <div className="font-bold text-[#f8fafc] tracking-tight">
+              <div className="font-bold text-slate-200 tracking-tight">
                 Max Augusto
               </div>
-              <div className="text-[10px] text-[#64748b]">
-                Support Analyst • Backend Engineer • DevOps & Networks Enthusiast
+              <div className="text-[10px] text-slate-500">
+                Support Analyst • Backend Engineer • DevOps &amp; Networks
               </div>
             </div>
           </div>
@@ -42,7 +41,7 @@ export const Footer: React.FC = () => {
               href={PERSONAL_INFO.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-lg bg-[#0f172a] border border-[#1e293b] text-[#94a3b8] hover:text-[#10b981] hover:border-[#10b981]/40 transition-all"
+              className={`p-2 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:${theme.activeText} hover:bg-[#1f2638] transition-all shadow-xs`}
               title="GitHub"
             >
               <Github className="w-4 h-4" />
@@ -52,7 +51,7 @@ export const Footer: React.FC = () => {
               href={PERSONAL_INFO.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-lg bg-[#0f172a] border border-[#1e293b] text-[#94a3b8] hover:text-[#06b6d4] hover:border-[#06b6d4]/40 transition-all"
+              className={`p-2 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:${theme.activeText} hover:bg-[#1f2638] transition-all shadow-xs`}
               title="LinkedIn"
             >
               <Linkedin className="w-4 h-4" />
@@ -60,7 +59,7 @@ export const Footer: React.FC = () => {
 
             <a
               href={`mailto:${PERSONAL_INFO.email}`}
-              className="p-2 rounded-lg bg-[#0f172a] border border-[#1e293b] text-[#94a3b8] hover:text-[#f59e0b] hover:border-[#f59e0b]/40 transition-all"
+              className={`p-2 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:${theme.activeText} hover:bg-[#1f2638] transition-all shadow-xs`}
               title="E-mail"
             >
               <Mail className="w-4 h-4" />
@@ -68,19 +67,19 @@ export const Footer: React.FC = () => {
 
             <button
               onClick={scrollToTop}
-              className="flex items-center gap-1 px-3 py-2 rounded-lg bg-[#1e293b] hover:bg-[#334155] text-[#f8fafc] transition-all cursor-pointer text-xs"
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#181d2a] hover:bg-[#1f2638] text-slate-200 border border-[#272f42] hover:${theme.activeBorder} transition-all cursor-pointer text-xs font-semibold`}
               title="Voltar ao topo"
             >
-              <ArrowUp className="w-3.5 h-3.5" />
+              <ArrowUp className={`w-3.5 h-3.5 ${theme.activeText}`} />
               <span>TOPO</span>
             </button>
           </div>
         </div>
 
         {/* Bottom system telemetry info */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-[#64748b]">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse"></span>
+            <span className={`w-2 h-2 rounded-full ${theme.activeBg} animate-pulse`}></span>
             <span>SYSTEM CONSOLE: OPERATIONAL</span>
             <span>•</span>
             <span>UPTIME: 99.98%</span>
@@ -89,7 +88,7 @@ export const Footer: React.FC = () => {
           </div>
 
           <div className="text-center md:text-right">
-            © {new Date().getFullYear()} Max Augusto. Desenvolvido com React, TypeScript & Tailwind CSS.
+            © {new Date().getFullYear()} Max Augusto. Portfolio Dark Edition.
           </div>
         </div>
 

@@ -3,6 +3,8 @@
 @layer base {
   body {
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    color: #f1f5f9;
+    background-color: #0a0d14;
   }
   
   code, pre, .font-mono {
@@ -10,12 +12,12 @@
   }
 }
 
-/* Custom technical styling */
+/* Subtle Technical Dark Grid Background */
 .tech-grid-bg {
   background-size: 32px 32px;
   background-image: 
-    linear-gradient(to right, rgba(30, 41, 59, 0.35) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(30, 41, 59, 0.35) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
 }
 
 .terminal-scroll::-webkit-scrollbar {
@@ -23,42 +25,25 @@
   height: 6px;
 }
 .terminal-scroll::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #0d111a;
 }
 .terminal-scroll::-webkit-scrollbar-thumb {
   background: #1e293b;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 .terminal-scroll::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
 
-/* Custom glow and animations */
-.glow-emerald {
-  box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.25);
-}
-
-.glow-cyan {
-  box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.25);
-}
-
-.glow-amber {
-  box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.25);
-}
-
-/* Scanline effect */
-.scanline {
-  position: relative;
-}
-.scanline::after {
+/* Scanline visual effect for retro console */
+.scanline::before {
   content: " ";
   display: block;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
   background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
   background-size: 100% 4px;
-  z-index: 2;
+  z-index: 10;
   pointer-events: none;
-  opacity: 0.3;
+  opacity: 0.15;
 }
-

@@ -1,20 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  Terminal as TerminalIcon, 
   CornerDownLeft, 
   Trash2, 
   Maximize2, 
   Minimize2, 
-  HelpCircle,
-  Copy,
-  Check,
-  Sparkles,
-  Command
+  Copy, 
+  Check, 
+  Command 
 } from 'lucide-react';
-import { PERSONAL_INFO, PROJECTS, WHAT_I_DO, EXPERIENCES, TERMINAL_COMMANDS_HELP } from '../data/portfolioData';
+import { PERSONAL_INFO, PROJECTS, EXPERIENCES, TERMINAL_COMMANDS_HELP } from '../data/portfolioData';
 import { TerminalLog } from '../types';
+import { useTheme } from '../context/ThemeContext';
 
 export const TerminalWidget: React.FC = () => {
+  const { theme } = useTheme();
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<TerminalLog[]>([
     {
@@ -42,11 +41,13 @@ export const TerminalWidget: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [copied, setCopied] = useState(false);
 
-  const logsEndRef = useRef<HTMLDivElement>(null);
+  const logsContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
-    logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (logsContainerRef.current) {
+      logsContainerRef.current.scrollTop = logsContainerRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
@@ -62,7 +63,6 @@ export const TerminalWidget: React.FC = () => {
     const trimmed = cmdText.trim();
     if (!trimmed) return;
 
-    // Add command to input log
     const cmdId = Date.now().toString();
     const newLogs: TerminalLog[] = [
       ...history,
@@ -83,10 +83,6 @@ export const TerminalWidget: React.FC = () => {
 
     switch (mainCmd) {
       case 'help': {
-        const helpText = TERMINAL_COMMANDS_HELP.map(
-          c => `  \x1b[38;2;16;185;129m${c.cmd.padEnd(14)}\x1b[0m ${c.desc}`
-        ).join('\n');
-
         newLogs.push({
           id: `out-${cmdId}`,
           type: 'output',
@@ -108,17 +104,38 @@ export const TerminalWidget: React.FC = () => {
 
       case 'skills': {
         const skillsOutput = [
-          '⚡ CAPACIDADES TÉCNICAS E PROTOCOLOS:',
-          '├── Backend: Python, Django, Django REST, PostgreSQL, REST APIs, Webhooks',
-          '├── Infraestrutura: Redes LAN L2/L3, Switches, Hardware de Servidores, VLANs, TCP/IP',
-          '├── Cloud & DevOps: Railway Cloud, CI/CD Pipelines, DNS (SPF/DKIM), Resend/Anymail',
-          '└── Metodologia: ITIL v4, SLA Crítico, Gestão de Incidentes, SOPs',
+          '⚡ CAPACIDADES TÉCNICAS & ARQUITETURA:',
+          '├── Backend: Python, Django REST, FastAPI, C#, .NET 10, PostgreSQL, EF Core',
+          '├── Infraestrutura: Redes LAN L2/L3, Switches, Linux/Windows Server, ITIL v4, SLA Crítico',
+          '├── Cloud & DevOps: Docker, Docker Compose, Railway, AWS, GitHub Actions, DNS (SPF/DKIM)',
+          '└── Segurança: Cisco Cybersecurity, Auth0, Clerk, Secrets Management (.env/Vault)',
         ].join('\n');
 
         newLogs.push({
           id: `out-${cmdId}`,
           type: 'success',
           text: skillsOutput,
+          timestamp: getTimestamp(),
+        });
+        break;
+      }
+
+      case 'stats':
+      case 'github': {
+        const statsOutput = [
+          '🐱 GITHUB TELEMETRY & WAKATIME DATA:',
+          '├── Contribuições em 2026: 320+ commits (Active Streak)',
+          '├── Código Escrito: ~68.48 mil linhas de código',
+          '├── Repositórios: 10 Públicos | 5 Privados | Status: Open to Hire',
+          '├── Horário Mais Ativo: Early Bird (38.2% Manhã, 33.6% Tarde, 28.1% Noite)',
+          '├── Dia de Pico: Sexta-feira (57.5% dos commits)',
+          '└── Linguagens Principais: Python (38.5%), HTML (30.8%), TypeScript (15.4%), C# (7.7%), CSS (7.7%)',
+        ].join('\n');
+
+        newLogs.push({
+          id: `out-${cmdId}`,
+          type: 'info',
+          text: statsOutput,
           timestamp: getTimestamp(),
         });
         break;
@@ -328,32 +345,33 @@ export const TerminalWidget: React.FC = () => {
   };
 
   return (
-    <section id="terminal" className="py-8 sm:py-12 border-t border-[#1e293b]/60">
+    <section id="terminal" className="bg-[#121620] border border-[#1e2433] rounded-3xl p-6 sm:p-9 shadow-xl">
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-4 pb-4 border-b border-[#1e2433]">
         <div>
-          <div className="flex items-center gap-2 font-mono text-xs text-[#10b981] uppercase tracking-widest mb-1.5">
-            <span className="w-2 h-2 rounded-sm bg-[#10b981]"></span>
+          <div className={`flex items-center gap-2 font-mono text-xs ${theme.activeText} uppercase tracking-widest mb-1.5 font-bold`}>
+            <span className={`w-2 h-2 rounded-sm ${theme.activeBg}`}></span>
             <span>INTERACTIVE_SHELL // CLI_EMULATOR</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#f8fafc] tracking-tight">
-            Terminal Interativo <span className="text-[#94a3b8] font-normal text-lg sm:text-xl">/ Operator Console</span>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight flex items-center">
+            <span>Terminal Console</span>
+            <span className={theme.activeText}>.</span>
           </h2>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={copyTerminalOutput}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0f172a] border border-[#1e293b] text-[#94a3b8] hover:text-[#f8fafc] text-xs font-mono transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:text-white text-xs font-mono transition-all cursor-pointer shadow-xs"
             title="Copiar log do terminal"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-[#10b981]" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copied ? 'LOG COPIADO' : 'COPIAR LOG'}</span>
           </button>
 
           <button
             onClick={() => handleCommand('clear')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0f172a] border border-[#1e293b] text-[#94a3b8] hover:text-[#ef4444] text-xs font-mono transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:text-rose-400 text-xs font-mono transition-all cursor-pointer shadow-xs"
             title="Limpar terminal"
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -362,7 +380,7 @@ export const TerminalWidget: React.FC = () => {
 
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-1.5 rounded-lg bg-[#0f172a] border border-[#1e293b] text-[#94a3b8] hover:text-[#f8fafc] transition-all cursor-pointer"
+            className="p-2 rounded-xl bg-[#181d2a] border border-[#272f42] text-slate-400 hover:text-white transition-all cursor-pointer shadow-xs"
             title={isExpanded ? 'Diminuir tamanho' : 'Expandir terminal'}
           >
             {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -371,24 +389,24 @@ export const TerminalWidget: React.FC = () => {
       </div>
 
       {/* Terminal Main Window */}
-      <div className={`bg-[#090d16] border border-[#1e293b] rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 ${
+      <div className={`bg-[#0a0d14] border border-[#1e2433] rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 ${
         isExpanded ? 'h-[650px]' : 'h-[440px]'
       } flex flex-col relative scanline`}>
         
         {/* Terminal Header Bar */}
-        <div className="bg-[#0a0f1d] px-4 py-3 border-b border-[#1e293b] flex items-center justify-between font-mono text-xs text-[#94a3b8] select-none">
+        <div className="bg-[#121620] px-4 py-3 border-b border-[#1e2433] flex items-center justify-between font-mono text-xs text-slate-400 select-none">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#ef4444] border border-[#dc2626]/40"></span>
-              <span className="w-3 h-3 rounded-full bg-[#f59e0b] border border-[#d97706]/40"></span>
-              <span className="w-3 h-3 rounded-full bg-[#10b981] border border-[#059669]/40"></span>
+              <span className="w-3 h-3 rounded-full bg-[#ef4444]"></span>
+              <span className="w-3 h-3 rounded-full bg-[#f59e0b]"></span>
+              <span className="w-3 h-3 rounded-full bg-[#10b981]"></span>
             </div>
-            <span className="ml-2 text-[#cbd5e1] font-semibold text-[11px]">
+            <span className="ml-2 text-slate-200 font-semibold text-[11px]">
               bash — max@operator-node: ~ (pt-BR / UTF-8)
             </span>
           </div>
 
-          <div className="hidden sm:flex items-center gap-3 text-[10px] text-[#64748b]">
+          <div className="hidden sm:flex items-center gap-3 text-[10px] text-slate-500">
             <span>TAB: AUTOCOMPLETE</span>
             <span>▲▼: HISTÓRICO</span>
           </div>
@@ -396,27 +414,27 @@ export const TerminalWidget: React.FC = () => {
 
         {/* Terminal Logs View */}
         <div 
+          ref={logsContainerRef}
           onClick={() => inputRef.current?.focus()}
           className="flex-1 p-4 sm:p-5 overflow-y-auto font-mono text-xs sm:text-sm space-y-2.5 terminal-scroll cursor-text"
         >
           {history.map((log) => {
-            let textColor = 'text-[#cbd5e1]';
-            let prefix = '';
+            let textColor = 'text-slate-300';
 
             if (log.type === 'input') {
               return (
-                <div key={log.id} className="flex items-start gap-2 text-[#f8fafc]">
-                  <span className="text-[#10b981] font-bold select-none">operator@max:~$</span>
-                  <span className="text-[#06b6d4] font-semibold">{log.text}</span>
-                  <span className="text-[10px] text-[#475569] ml-auto select-none">{log.timestamp}</span>
+                <div key={log.id} className="flex items-start gap-2 text-slate-100">
+                  <span className={`${theme.activeText} font-bold select-none`}>operator@max:~$</span>
+                  <span className="text-cyan-400 font-semibold">{log.text}</span>
+                  <span className="text-[10px] text-slate-600 ml-auto select-none">{log.timestamp}</span>
                 </div>
               );
             }
 
-            if (log.type === 'system') textColor = 'text-[#64748b]';
-            if (log.type === 'info') textColor = 'text-[#38bdf8]';
-            if (log.type === 'success') textColor = 'text-[#10b981]';
-            if (log.type === 'error') textColor = 'text-[#f87171]';
+            if (log.type === 'system') textColor = 'text-slate-500';
+            if (log.type === 'info') textColor = theme.activeText;
+            if (log.type === 'success') textColor = 'text-emerald-400';
+            if (log.type === 'error') textColor = 'text-rose-400';
 
             return (
               <div key={log.id} className={`leading-relaxed whitespace-pre-wrap ${textColor}`}>
@@ -424,12 +442,11 @@ export const TerminalWidget: React.FC = () => {
               </div>
             );
           })}
-          <div ref={logsEndRef} />
         </div>
 
         {/* Terminal Input Bar */}
-        <div className="p-3 bg-[#0a0f1d] border-t border-[#1e293b] flex items-center gap-2">
-          <span className="text-[#10b981] font-mono text-xs sm:text-sm font-bold shrink-0 select-none">
+        <div className="p-3 bg-[#121620] border-t border-[#1e2433] flex items-center gap-2">
+          <span className={`${theme.activeText} font-mono text-xs sm:text-sm font-bold shrink-0 select-none`}>
             operator@max:~$
           </span>
           <input
@@ -439,13 +456,13 @@ export const TerminalWidget: React.FC = () => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Digite um comando (ex: help, skills, projects, contact)..."
-            className="flex-1 bg-transparent border-none outline-none font-mono text-xs sm:text-sm text-[#f8fafc] placeholder-[#475569] focus:ring-0"
+            className="flex-1 bg-transparent border-none outline-none font-mono text-xs sm:text-sm text-slate-100 placeholder-slate-600 focus:ring-0"
             autoComplete="off"
             spellCheck={false}
           />
           <button
             onClick={() => handleCommand(input)}
-            className="p-1.5 rounded-md bg-[#10b981] text-[#090d16] hover:bg-[#34d399] transition-all cursor-pointer shrink-0"
+            className={`p-1.5 rounded-lg ${theme.activeBg} text-white font-bold ${theme.activeBgHover} transition-all cursor-pointer shrink-0 shadow-xs`}
             title="Executar comando"
           >
             <CornerDownLeft className="w-3.5 h-3.5" />
@@ -453,15 +470,15 @@ export const TerminalWidget: React.FC = () => {
         </div>
 
         {/* Quick Commands Quickbar */}
-        <div className="bg-[#090d16] px-3 py-2 border-t border-[#1e293b]/70 flex items-center gap-1.5 overflow-x-auto text-[11px] font-mono text-[#94a3b8]">
-          <span className="text-[#64748b] shrink-0 flex items-center gap-1 text-[10px]">
+        <div className="bg-[#0c0e14] px-3 py-2 border-t border-[#1e2433] flex items-center gap-1.5 overflow-x-auto text-[11px] font-mono text-slate-400">
+          <span className="text-slate-500 shrink-0 flex items-center gap-1 text-[10px]">
             <Command className="w-3 h-3" /> ATALHOS:
           </span>
           {quickCommands.map((qCmd) => (
             <button
               key={qCmd}
               onClick={() => handleCommand(qCmd)}
-              className="px-2 py-0.5 rounded bg-[#1e293b]/70 hover:bg-[#1e293b] text-[#cbd5e1] hover:text-[#10b981] border border-[#334155]/60 transition-all whitespace-nowrap cursor-pointer"
+              className={`px-2 py-0.5 rounded-lg bg-[#181d2a] hover:bg-[#22293b] text-slate-300 hover:${theme.activeText} border border-[#272f42] transition-all whitespace-nowrap cursor-pointer`}
             >
               {qCmd}
             </button>
