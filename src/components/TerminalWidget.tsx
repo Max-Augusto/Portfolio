@@ -12,9 +12,14 @@ import { PERSONAL_INFO, PROJECTS, EXPERIENCES, TERMINAL_COMMANDS_HELP } from '..
 import { TerminalLog } from '../types';
 import { useTheme } from '../context/ThemeContext';
 
-export const TerminalWidget: React.FC = () => {
-  const { theme } = useTheme();
+interface TerminalWidgetProps {
+  onNavigate?: (section: string) => void;
+}
+
+export const TerminalWidget: React.FC<TerminalWidgetProps> = ({ onNavigate }) => {
+  const { theme, setAccentColor } = useTheme();
   const [input, setInput] = useState('');
+  const [isMatrixMode, setIsMatrixMode] = useState(false);
   const [history, setHistory] = useState<TerminalLog[]>([
     {
       id: 'init-1',
@@ -31,7 +36,7 @@ export const TerminalWidget: React.FC = () => {
     {
       id: 'init-3',
       type: 'success',
-      text: 'Digite "help" para ver os comandos disponíveis ou clique nos atalhos rápidos abaixo.',
+      text: 'Digite "help" para ver os comandos disponíveis, "matrix" para modo hacker ou clique nos atalhos.',
       timestamp: '00:00:03',
     },
   ]);
@@ -274,6 +279,52 @@ export const TerminalWidget: React.FC = () => {
         break;
       }
 
+      case 'matrix': {
+        setIsMatrixMode(prev => !prev);
+        newLogs.push({
+          id: `out-${cmdId}`,
+          type: 'success',
+          text: `[MATRIX] Modo Matrix ${!isMatrixMode ? 'ATIVADO' : 'DESATIVADO'}. Digite "matrix" novamente para alternar.`,
+          timestamp: getTimestamp(),
+        });
+        break;
+      }
+
+      case 'theme': {
+        const targetTheme = args[1];
+        if (targetTheme && ['blue', 'cyan', 'amber', 'rose'].includes(targetTheme)) {
+          setAccentColor(targetTheme as any);
+          newLogs.push({
+            id: `out-${cmdId}`,
+            type: 'success',
+            text: `✔ Paleta visual do console alterada para: ${targetTheme.toUpperCase()}`,
+            timestamp: getTimestamp(),
+          });
+        } else {
+          newLogs.push({
+            id: `out-${cmdId}`,
+            type: 'info',
+            text: `Uso: theme <blue | cyan | amber | rose>\nExemplo: theme cyan`,
+            timestamp: getTimestamp(),
+          });
+        }
+        break;
+      }
+
+      case 'topology':
+      case 'lab': {
+        if (onNavigate) {
+          onNavigate('topology');
+          newLogs.push({
+            id: `out-${cmdId}`,
+            type: 'success',
+            text: `✔ Redirecionando para o Laboratório de Topologia & Redes N2...`,
+            timestamp: getTimestamp(),
+          });
+        }
+        break;
+      }
+
       case 'clear':
       case 'cls': {
         setHistory([
@@ -335,7 +386,7 @@ export const TerminalWidget: React.FC = () => {
     }
   };
 
-  const quickCommands = ['help', 'skills', 'projects', 'exp', 'contact', 'sysinfo', 'ping', 'curl saas', 'clear'];
+  const quickCommands = ['help', 'skills', 'projects', 'exp', 'topology', 'matrix', 'contact', 'sysinfo', 'ping', 'curl saas', 'clear'];
 
   const copyTerminalOutput = () => {
     const textToCopy = history.map(h => `[${h.timestamp}] ${h.type === 'input' ? '$ ' : ''}${h.text}`).join('\n');
@@ -416,25 +467,33 @@ export const TerminalWidget: React.FC = () => {
         <div 
           ref={logsContainerRef}
           onClick={() => inputRef.current?.focus()}
-          className="flex-1 p-4 sm:p-5 overflow-y-auto font-mono text-xs sm:text-sm space-y-2.5 terminal-scroll cursor-text"
+          className={`flex-1 p-4 sm:p-5 overflow-y-auto font-mono text-xs sm:text-sm space-y-2.5 terminal-scroll cursor-text transition-colors duration-300 ${
+            isMatrixMode ? 'bg-[#030d06] text-emerald-400 font-semibold' : ''
+          }`}
         >
           {history.map((log) => {
             let textColor = 'text-slate-300';
 
+            if (isMatrixMode) {
+              textColor = 'text-emerald-400';
+            }
+
             if (log.type === 'input') {
               return (
                 <div key={log.id} className="flex items-start gap-2 text-slate-100">
-                  <span className={`${theme.activeText} font-bold select-none`}>operator@max:~$</span>
-                  <span className="text-cyan-400 font-semibold">{log.text}</span>
+                  <span className={`${isMatrixMode ? 'text-emerald-500' : theme.activeText} font-bold select-none`}>operator@max:~$</span>
+                  <span className={isMatrixMode ? 'text-emerald-300 font-bold' : 'text-cyan-400 font-semibold'}>{log.text}</span>
                   <span className="text-[10px] text-slate-600 ml-auto select-none">{log.timestamp}</span>
                 </div>
               );
             }
 
-            if (log.type === 'system') textColor = 'text-slate-500';
-            if (log.type === 'info') textColor = theme.activeText;
-            if (log.type === 'success') textColor = 'text-emerald-400';
-            if (log.type === 'error') textColor = 'text-rose-400';
+            if (!isMatrixMode) {
+              if (log.type === 'system') textColor = 'text-slate-500';
+              if (log.type === 'info') textColor = theme.activeText;
+              if (log.type === 'success') textColor = 'text-emerald-400';
+              if (log.type === 'error') textColor = 'text-rose-400';
+            }
 
             return (
               <div key={log.id} className={`leading-relaxed whitespace-pre-wrap ${textColor}`}>

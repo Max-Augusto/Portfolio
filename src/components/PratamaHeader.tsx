@@ -7,16 +7,22 @@ import {
   Phone, 
   ChevronDown, 
   Copy, 
-  Check 
+  Check,
+  Command,
+  Activity
 } from 'lucide-react';
 import { PERSONAL_INFO } from '../data/portfolioData';
 import { useTheme } from '../context/ThemeContext';
 
 interface PratamaHeaderProps {
   onOpenResume: () => void;
+  onOpenCommandPalette?: () => void;
 }
 
-export const PratamaHeader: React.FC<PratamaHeaderProps> = ({ onOpenResume }) => {
+export const PratamaHeader: React.FC<PratamaHeaderProps> = ({ 
+  onOpenResume,
+  onOpenCommandPalette 
+}) => {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [currentTime, setCurrentTime] = useState<string>('');
   const [isAvailable, setIsAvailable] = useState<boolean>(true);
@@ -53,16 +59,43 @@ export const PratamaHeader: React.FC<PratamaHeaderProps> = ({ onOpenResume }) =>
         
         {/* Top Console Bar */}
         <div className="flex items-center justify-between pb-5 border-b border-[#1e2433]/70 mb-6">
-          {/* macOS Terminal Dots */}
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-[#ef4444] inline-block shadow-sm"></span>
-            <span className="w-3 h-3 rounded-full bg-[#f59e0b] inline-block shadow-sm"></span>
-            <span className="w-3 h-3 rounded-full bg-[#10b981] inline-block shadow-sm"></span>
+          {/* macOS Terminal Dots & Live Operational Status */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-[#ef4444] inline-block shadow-sm"></span>
+              <span className="w-3 h-3 rounded-full bg-[#f59e0b] inline-block shadow-sm"></span>
+              <span className="w-3 h-3 rounded-full bg-[#10b981] inline-block shadow-sm"></span>
+            </div>
+
+            {/* Live Operational Status Indicator */}
+            <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#161b26] border border-[#232a3d] text-[11px] font-mono text-slate-300 shadow-xs">
+              <Activity className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+              <span>SISTEMAS OPERACIONAIS</span>
+              <span className="text-slate-600">|</span>
+              <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                99.9% UPTIME
+              </span>
+            </div>
           </div>
 
-          {/* Right Label with active theme badge */}
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-slate-500 tracking-wider">
+          {/* Right Controls: Command Palette trigger & active theme badge */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {onOpenCommandPalette && (
+              <button
+                onClick={onOpenCommandPalette}
+                title="Abrir Command Palette (Ctrl+K ou ⌘K)"
+                className="flex items-center gap-2 px-3 py-1 rounded-xl bg-[#181d2a] hover:bg-[#202738] border border-[#272f42] hover:border-slate-500 text-slate-300 font-mono text-xs cursor-pointer transition-all shadow-xs group"
+              >
+                <Command className={`w-3.5 h-3.5 ${theme.activeText}`} />
+                <span className="text-slate-300 group-hover:text-white">Buscar</span>
+                <kbd className="text-[10px] bg-[#121620] px-1.5 py-0.5 rounded border border-[#272f42] text-slate-400 font-bold">
+                  ⌘K
+                </kbd>
+              </button>
+            )}
+
+            <span className="font-mono text-xs text-slate-500 tracking-wider hidden md:inline-block">
               operator console
             </span>
             <span className={`text-[10px] font-mono px-2 py-0.5 rounded-md ${theme.activeTagBg} uppercase tracking-wider font-semibold hidden sm:inline-block`}>
