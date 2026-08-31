@@ -161,7 +161,7 @@ const MainPortfolio: React.FC = () => {
         <main className="flex-1 w-full flex flex-col gap-4 min-w-0">
           
           {/* Active Page Header Breadcrumb Status & Quick Navigation */}
-          <div className={`${theme.bgCard}/90 border ${theme.borderCard} rounded-xl px-3.5 py-2 flex items-center justify-between font-mono text-xs ${theme.textMuted} shadow-sm backdrop-blur-sm`}>
+          <div className={`${theme.bgCard}/90 border ${theme.borderCard} rounded-xl px-3 sm:px-4 py-2 flex items-center justify-between font-mono text-xs ${theme.textMuted} shadow-sm backdrop-blur-sm`}>
             <div className="flex items-center gap-2 min-w-0">
               <Hash className={`w-3.5 h-3.5 ${theme.activeText} shrink-0`} />
               <span className={`${theme.textMuted} shrink-0`}>{t('section.prefix')}</span>
@@ -176,18 +176,18 @@ const MainPortfolio: React.FC = () => {
 
             {/* Top Navigation Controls */}
             <div className="flex items-center gap-2 shrink-0">
-              <span className={`text-[11px] ${theme.textMuted} font-medium hidden xs:inline`}>
-                {currentIndex + 1}/{SECTIONS.length}
+              <span className={`text-[11px] ${theme.textMuted} font-mono font-medium px-2 py-0.5 rounded ${theme.bgSubCard} border ${theme.borderSubCard}`}>
+                {currentIndex + 1} / {SECTIONS.length}
               </span>
 
-              <div className="flex items-center gap-1">
+              <div className="hidden sm:flex items-center gap-1">
                 <button
                   onClick={() => prevSection && handleSelectSection(prevSection.id)}
                   disabled={!prevSection}
                   className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-mono transition-all ${
                     prevSection
                       ? `${theme.bgSubCard} hover:${theme.bgCardHover} ${theme.textPrimary} border ${theme.borderSubCard} cursor-pointer active:scale-95`
-                      : `opacity-30 cursor-not-allowed border-transparent text-slate-500`
+                      : `opacity-40 cursor-not-allowed bg-slate-800/20 border-slate-700/40 text-slate-500`
                   }`}
                   title={prevSection ? `${isPT ? 'Anterior:' : 'Previous:'} ${prevSection.label}` : ''}
                   aria-label="Seção anterior"
@@ -202,7 +202,7 @@ const MainPortfolio: React.FC = () => {
                   className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-mono transition-all ${
                     nextSection
                       ? `${theme.activeBg} text-white font-bold border-transparent cursor-pointer active:scale-95 shadow-xs`
-                      : `opacity-30 cursor-not-allowed border-transparent text-slate-500`
+                      : `opacity-40 cursor-not-allowed bg-slate-800/20 border-slate-700/40 text-slate-500`
                   }`}
                   title={nextSection ? `${isPT ? 'Próxima:' : 'Next:'} ${nextSection.label}` : ''}
                   aria-label="Próxima seção"

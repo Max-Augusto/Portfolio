@@ -71,16 +71,102 @@ html, body {
   opacity: 0.15;
 }
 
-/* Optimized Print Styles for Resume/CV */
+/* Optimized Print Styles for Technical Resume / CV PDF Export */
 @media print {
-  body {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm 10mm 12mm;
+  }
+
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html, body {
     background-color: #ffffff !important;
     color: #0f172a !important;
+    overflow: visible !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 10pt !important;
+    line-height: 1.4 !important;
   }
-  .tech-grid-bg {
-    background-image: none !important;
-  }
-  header, nav, footer, .scanline::before {
+
+  /* Hide entire page structure except printable CV container */
+  header, 
+  nav, 
+  footer, 
+  .no-print, 
+  .scanline::before,
+  .tech-grid-bg,
+  #root > div > header,
+  #root > div > div.max-w-7xl,
+  #root > div > div.pb-24,
+  #root > div > div.fixed:not(#print-modal-wrapper) {
     display: none !important;
   }
+
+  /* Target the printable resume container */
+  #print-modal-wrapper {
+    position: static !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    z-index: 99999 !important;
+    inset: auto !important;
+  }
+
+  #print-root-container {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .print-scroll-container {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 0 !important;
+  }
+
+  .print-avoid-break {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Ensure text contrast on print */
+  .print-text-dark {
+    color: #0f172a !important;
+  }
+  .print-text-muted {
+    color: #475569 !important;
+  }
+  .print-bg-light {
+    background-color: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+  }
+  .print-border-light {
+    border-color: #cbd5e1 !important;
+  }
 }
+
