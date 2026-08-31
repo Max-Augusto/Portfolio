@@ -37,7 +37,7 @@ export const HeroBento: React.FC<HeroBentoProps> = ({ onOpenResume, onNavigateTo
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-5">
         
         {/* CARD 1: Main Operator Identity Card (Bento Hero) */}
-        <div className="md:col-span-12 lg:col-span-7 bg-white border border-slate-200/90 hover:border-slate-300 transition-all rounded-2xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group shadow-sm hover:shadow-md">
+        <div className="md:col-span-12 lg:col-span-7 bg-white border border-slate-200/90 hover:border-slate-300 transition-all rounded-2xl p-4 sm:p-8 flex flex-col justify-between relative overflow-hidden group shadow-sm hover:shadow-md">
           {/* Subtle background ambient blur */}
           <div className="absolute -top-12 -right-12 w-64 h-64 bg-blue-50 rounded-full blur-3xl pointer-events-none group-hover:bg-blue-100/50 transition-all duration-700"></div>
           <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-emerald-50 rounded-full blur-2xl pointer-events-none"></div>
@@ -125,11 +125,11 @@ export const HeroBento: React.FC<HeroBentoProps> = ({ onOpenResume, onNavigateTo
           </div>
 
           {/* Action CTAs */}
-          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 relative z-10">
-            <div className="flex flex-wrap gap-2">
+          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
+            <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
               <button
                 onClick={onOpenResume}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white font-mono text-xs font-bold hover:bg-blue-600 transition-all shadow-xs cursor-pointer"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white font-mono text-xs font-bold hover:bg-blue-600 transition-all shadow-xs cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5 text-blue-300" />
                 <span>BAIXAR / VER CV</span>
@@ -137,7 +137,7 @@ export const HeroBento: React.FC<HeroBentoProps> = ({ onOpenResume, onNavigateTo
 
               <a
                 href="#contact"
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-mono text-xs font-semibold border border-slate-200 hover:border-slate-300 transition-all shadow-xs"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-mono text-xs font-semibold border border-slate-200 hover:border-slate-300 transition-all shadow-xs"
               >
                 <Send className="w-3.5 h-3.5 text-blue-600" />
                 <span>INICIAR CONTATO</span>

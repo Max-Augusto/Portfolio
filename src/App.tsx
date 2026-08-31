@@ -27,14 +27,14 @@ const MainPortfolio: React.FC = () => {
   const { language, isPT, t } = useLanguage();
 
   const SECTIONS = [
-    { id: 'about', label: 'ABOUT', title: isPT ? 'Sobre Mim' : 'About Me' },
-    { id: 'what-i-do', label: 'WHAT I DO', title: isPT ? 'O que Faço' : 'What I Do' },
-    { id: 'experience', label: 'EXPERIENCE', title: isPT ? 'Experiência' : 'Experience' },
-    { id: 'projects', label: 'PROJECTS', title: isPT ? 'Projetos' : 'Projects' },
-    { id: 'skills', label: 'SKILLS', title: isPT ? 'Habilidades' : 'Skills' },
-    { id: 'topology', label: 'TOPOLOGY & LAB', title: isPT ? 'Simulador de Rede & Diagnóstico N2' : 'Network Simulator & L2/L3 Diagnostics' },
-    { id: 'terminal', label: 'TERMINAL', title: isPT ? 'Console Terminal Interativo' : 'Interactive Terminal Console' },
-    { id: 'contact', label: 'CONTACT', title: isPT ? 'Contato' : 'Contact' },
+    { id: 'about', label: t('nav.about'), title: isPT ? 'Perfil & Bio' : 'Profile & Bio' },
+    { id: 'what-i-do', label: t('nav.what_i_do'), title: isPT ? 'Infraestrutura & Backend' : 'Infrastructure & Backend' },
+    { id: 'experience', label: t('nav.experience'), title: isPT ? 'Trajetória & Positivo S+' : 'Career & Positivo S+' },
+    { id: 'projects', label: t('nav.projects'), title: isPT ? 'Betim Express & Projetos' : 'Betim Express & Projects' },
+    { id: 'skills', label: t('nav.skills'), title: isPT ? 'Stack Técnica & Redes' : 'Tech Stack & Networks' },
+    { id: 'topology', label: t('nav.topology'), title: isPT ? 'Simulador de Rede L2/L3' : 'L2/L3 Network Simulator' },
+    { id: 'terminal', label: t('nav.terminal'), title: isPT ? 'Console Interativo' : 'Interactive Console' },
+    { id: 'contact', label: t('nav.contact'), title: isPT ? 'Canais Diretos' : 'Direct Channels' },
   ];
 
   const currentIndex = SECTIONS.findIndex(s => s.id === activeSection);
@@ -137,14 +137,16 @@ const MainPortfolio: React.FC = () => {
         style={{ backgroundColor: theme.hex }}
       />
 
-      {/* Pratama Console Header */}
+      {/* Pratama Console Header with prominent 8-section direct bar */}
       <PratamaHeader 
         onOpenResume={() => setIsResumeOpen(true)} 
         onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+        activeSection={activeSection}
+        onSelectSection={handleSelectSection}
       />
 
       {/* Pratama Main 2-Column Body Layout */}
-      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 pt-4 pb-12 flex flex-col lg:flex-row gap-6 items-start">
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 pt-4 pb-28 lg:pb-12 flex flex-col lg:flex-row gap-6 items-start">
         
         {/* Sticky Left Sidebar Navigation with Color Palette Blocks - Hidden on mobile, visible on desktop */}
         <div className="hidden lg:block w-full lg:w-auto lg:sticky lg:top-6 z-20">
@@ -156,24 +158,59 @@ const MainPortfolio: React.FC = () => {
         </div>
 
         {/* Central Dynamic Content Stack - Shows ONLY the Active Page */}
-        <main className="flex-1 w-full flex flex-col gap-5 min-w-0">
+        <main className="flex-1 w-full flex flex-col gap-4 min-w-0">
           
-          {/* Active Page Header Breadcrumb Status */}
-          <div className={`${theme.bgCard}/80 border ${theme.borderCard} rounded-2xl px-5 py-3 flex items-center justify-between font-mono text-xs ${theme.textMuted} shadow-sm backdrop-blur-sm`}>
-            <div className="flex items-center gap-2">
-              <Hash className={`w-3.5 h-3.5 ${theme.activeText}`} />
-              <span className={theme.textMuted}>{t('section.prefix')}</span>
-              <span className={`${theme.activeText} font-bold uppercase tracking-wider`}>
-                {SECTIONS[currentIndex]?.label || 'ABOUT'}
+          {/* Active Page Header Breadcrumb Status & Quick Navigation */}
+          <div className={`${theme.bgCard}/90 border ${theme.borderCard} rounded-xl px-3.5 py-2 flex items-center justify-between font-mono text-xs ${theme.textMuted} shadow-sm backdrop-blur-sm`}>
+            <div className="flex items-center gap-2 min-w-0">
+              <Hash className={`w-3.5 h-3.5 ${theme.activeText} shrink-0`} />
+              <span className={`${theme.textMuted} shrink-0`}>{t('section.prefix')}</span>
+              <span className={`${theme.activeText} font-bold uppercase tracking-wider truncate`}>
+                {SECTIONS[currentIndex]?.label || ''}
               </span>
-              <span className={`${theme.textMuted} hidden sm:inline`}>•</span>
-              <span className={`${theme.textSecondary} text-[11px] hidden sm:inline`}>
+              <span className={`${theme.textMuted} hidden md:inline`}>•</span>
+              <span className={`${theme.textSecondary} text-[11px] hidden md:inline truncate`}>
                 {SECTIONS[currentIndex]?.title}
               </span>
             </div>
 
-            <div className={`text-[11px] ${theme.textMuted} font-medium`}>
-              {t('section.page')} {currentIndex + 1} {t('section.of')} {SECTIONS.length}
+            {/* Top Navigation Controls */}
+            <div className="flex items-center gap-2 shrink-0">
+              <span className={`text-[11px] ${theme.textMuted} font-medium hidden xs:inline`}>
+                {currentIndex + 1}/{SECTIONS.length}
+              </span>
+
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => prevSection && handleSelectSection(prevSection.id)}
+                  disabled={!prevSection}
+                  className={`flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-mono transition-all ${
+                    prevSection
+                      ? `${theme.bgSubCard} hover:${theme.bgCardHover} ${theme.textPrimary} border ${theme.borderSubCard} cursor-pointer active:scale-95`
+                      : `opacity-30 cursor-not-allowed border-transparent text-slate-500`
+                  }`}
+                  title={prevSection ? `${isPT ? 'Anterior:' : 'Previous:'} ${prevSection.label}` : ''}
+                  aria-label="Seção anterior"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline text-[11px] font-medium">{prevSection ? prevSection.label : ''}</span>
+                </button>
+
+                <button
+                  onClick={() => nextSection && handleSelectSection(nextSection.id)}
+                  disabled={!nextSection}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-mono transition-all ${
+                    nextSection
+                      ? `${theme.activeBg} text-white font-bold border-transparent cursor-pointer active:scale-95 shadow-xs`
+                      : `opacity-30 cursor-not-allowed border-transparent text-slate-500`
+                  }`}
+                  title={nextSection ? `${isPT ? 'Próxima:' : 'Next:'} ${nextSection.label}` : ''}
+                  aria-label="Próxima seção"
+                >
+                  <span className="hidden sm:inline text-[11px] font-medium">{nextSection ? nextSection.label : ''}</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           </div>
 
@@ -263,11 +300,11 @@ const MainPortfolio: React.FC = () => {
       />
 
       {/* SRE Footer */}
-      <div className="pb-16 lg:pb-0">
+      <div className="pb-24 lg:pb-6">
         <Footer />
       </div>
 
-      {/* Mobile Floating Bottom Bar */}
+      {/* Ergonomic Floating Mobile Dock (App Style with Quick Direct Tabs + All 8-Section Drawer) */}
       <MobileBottomBar 
         activeSection={activeSection}
         onSelectSection={handleSelectSection}

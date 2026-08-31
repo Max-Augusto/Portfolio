@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Download, 
   ChevronDown, 
+  ChevronLeft,
+  ChevronRight,
   Github, 
   Linkedin, 
   Mail, 
@@ -12,7 +14,15 @@ import {
   Activity,
   Sun,
   Moon,
-  Globe
+  Globe,
+  Compass,
+  User,
+  Layers,
+  FileText,
+  FolderGit2,
+  Cpu,
+  Network,
+  Terminal
 } from 'lucide-react';
 import { getPersonalInfo } from '../data/localizedData';
 import { useTheme, AccentColor } from '../context/ThemeContext';
@@ -21,19 +31,65 @@ import { useLanguage } from '../context/LanguageContext';
 interface PratamaHeaderProps {
   onOpenResume: () => void;
   onOpenCommandPalette?: () => void;
+  activeSection?: string;
+  onSelectSection?: (sectionId: string) => void;
 }
 
 export const PratamaHeader: React.FC<PratamaHeaderProps> = ({ 
   onOpenResume,
-  onOpenCommandPalette 
+  onOpenCommandPalette,
+  activeSection = 'about',
+  onSelectSection
 }) => {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [currentTime, setCurrentTime] = useState<string>('');
   const [isAvailable, setIsAvailable] = useState<boolean>(true);
-  
+
   const { theme, accentColor, setAccentColor, mode, toggleMode, isDark } = useTheme();
   const { language, toggleLanguage, setLanguage, isPT, t } = useLanguage();
   const personalInfo = getPersonalInfo(language);
+
+  const headerScrollRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
+
+  const headerSections = [
+    { id: 'about', label: t('nav.about'), icon: User, num: '01' },
+    { id: 'what-i-do', label: t('nav.what_i_do'), icon: Layers, num: '02' },
+    { id: 'experience', label: t('nav.experience'), icon: FileText, num: '03' },
+    { id: 'projects', label: t('nav.projects'), icon: FolderGit2, num: '04' },
+    { id: 'skills', label: t('nav.skills'), icon: Cpu, num: '05' },
+    { id: 'topology', label: t('nav.topology'), icon: Network, num: '06' },
+    { id: 'terminal', label: t('nav.terminal'), icon: Terminal, num: '07' },
+    { id: 'contact', label: t('nav.contact'), icon: Mail, num: '08' },
+  ];
+
+  const currentHeaderIndex = headerSections.findIndex(s => s.id === activeSection);
+  const prevHeaderSection = currentHeaderIndex > 0 ? headerSections[currentHeaderIndex - 1] : null;
+  const nextHeaderSection = currentHeaderIndex < headerSections.length - 1 ? headerSections[currentHeaderIndex + 1] : null;
+
+  // Auto-scroll active item into center view when changed
+  useEffect(() => {
+    const activeEl = itemRefs.current[activeSection];
+    const container = headerScrollRef.current;
+    if (activeEl && container) {
+      const containerWidth = container.offsetWidth;
+      const elOffsetLeft = activeEl.offsetLeft;
+      const elWidth = activeEl.offsetWidth;
+      const targetScroll = elOffsetLeft - (containerWidth / 2) + (elWidth / 2);
+      
+      container.scrollTo({
+        left: Math.max(0, targetScroll),
+        behavior: 'smooth'
+      });
+    }
+  }, [activeSection]);
+
+  const scrollHeader = (direction: 'left' | 'right') => {
+    if (headerScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -200 : 200;
+      headerScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   const colorSwatches: { id: AccentColor; label: string; bg: string }[] = [
     { id: 'blue', label: 'Cobalt Blue', bg: 'bg-[#3b82f6]' },
@@ -319,6 +375,106 @@ export const PratamaHeader: React.FC<PratamaHeaderProps> = ({
           </div>
 
         </div>
+
+        {/* Header Navigation Shortcut Bar - Prominent direct access to all 8 modules (PC & Mobile) */}
+        {onSelectSection && (
+          <div className={`mt-4 sm:mt-5 pt-3 sm:pt-4 border-t ${theme.borderCard}`}>
+            <div className="flex items-center justify-between gap-2 mb-2.5 px-0.5">
+              <div className="flex items-center gap-1.5 font-mono text-[11px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
+                <Compass className={`w-3.5 h-3.5 ${theme.activeText}`} />
+                <span>{t('header.nav_title')}</span>
+              </div>
+              
+              {/* Quick Prev / Next jump buttons & scroll helper */}
+              <div className="flex items-center gap-2">
+                <span className={`text-[10px] font-mono ${theme.textMuted} hidden xs:inline`}>
+                  {t('header.nav_hint')}
+                </span>
+
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => prevHeaderSection && onSelectSection(prevHeaderSection.id)}
+                    disabled={!prevHeaderSection}
+                    className={`p-1.5 rounded-lg border font-mono text-xs transition-all ${
+                      prevHeaderSection
+                        ? `${theme.bgSubCard} hover:${theme.bgCardHover} ${theme.textPrimary} border ${theme.borderSubCard} cursor-pointer active:scale-95`
+                        : `opacity-30 cursor-not-allowed border-transparent text-slate-500`
+                    }`}
+                    title={prevHeaderSection ? `${isPT ? 'Anterior:' : 'Previous:'} ${prevHeaderSection.label}` : ''}
+                    aria-label="Módulo anterior"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                  </button>
+
+                  <button
+                    onClick={() => nextHeaderSection && onSelectSection(nextHeaderSection.id)}
+                    disabled={!nextHeaderSection}
+                    className={`p-1.5 rounded-lg border font-mono text-xs transition-all ${
+                      nextHeaderSection
+                        ? `${theme.activeBg} text-white border-transparent cursor-pointer active:scale-95 shadow-xs`
+                        : `opacity-30 cursor-not-allowed border-transparent text-slate-500`
+                    }`}
+                    title={nextHeaderSection ? `${isPT ? 'Próximo:' : 'Next:'} ${nextHeaderSection.label}` : ''}
+                    aria-label="Próximo módulo"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Horizontal Tabs Container with Side Arrow Hints */}
+            <div className="relative group">
+              {/* Left Scroll Button (visible on hover or mobile) */}
+              <button
+                onClick={() => scrollHeader('left')}
+                className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 p-1.5 rounded-full ${theme.bgCard} shadow-md border ${theme.borderCard} ${theme.textPrimary} hover:scale-105 transition-all cursor-pointer hidden md:flex items-center justify-center opacity-0 group-hover:opacity-90 hover:opacity-100`}
+                title="Rolar para esquerda"
+                aria-label="Rolar abas para a esquerda"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+
+              <div 
+                ref={headerScrollRef}
+                className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5 scroll-smooth"
+              >
+                {headerSections.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeSection === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      ref={(el) => { itemRefs.current[item.id] = el; }}
+                      onClick={() => onSelectSection(item.id)}
+                      className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl font-mono text-xs transition-all duration-200 cursor-pointer min-h-[36px] ${
+                        isActive
+                          ? `${theme.activeBg} text-white font-bold shadow-md ring-2 ring-white/20`
+                          : `${theme.bgSubCard} ${theme.textSecondary} hover:${theme.textPrimary} border ${theme.borderSubCard} hover:border-slate-500`
+                      }`}
+                    >
+                      <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : theme.textMuted}`} />
+                      <span className="whitespace-nowrap font-medium">{item.label}</span>
+                      <span className={`text-[10px] font-mono opacity-80 ${isActive ? 'text-white' : 'text-slate-500'}`}>
+                        {item.num}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Right Scroll Button (visible on hover or desktop) */}
+              <button
+                onClick={() => scrollHeader('right')}
+                className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 p-1.5 rounded-full ${theme.bgCard} shadow-md border ${theme.borderCard} ${theme.textPrimary} hover:scale-105 transition-all cursor-pointer hidden md:flex items-center justify-center opacity-0 group-hover:opacity-90 hover:opacity-100`}
+                title="Rolar para direita"
+                aria-label="Rolar abas para a direita"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
 
       </div>
     </header>

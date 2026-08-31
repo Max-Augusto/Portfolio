@@ -64,14 +64,14 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   };
 
   const sections = [
-    { id: 'about', label: isPT ? 'Sobre Mim (About)' : 'About Me', category: isPT ? 'Navegação' : 'Navigation', icon: User, shortcut: '1' },
-    { id: 'what-i-do', label: isPT ? 'O Que Faço (Architecture & Infra)' : 'What I Do (Architecture & Infra)', category: isPT ? 'Navegação' : 'Navigation', icon: Layers, shortcut: '2' },
-    { id: 'experience', label: isPT ? 'Experiência Profissional (Positivo S+)' : 'Career Experience (Positivo S+)', category: isPT ? 'Navegação' : 'Navigation', icon: FileText, shortcut: '3' },
-    { id: 'projects', label: isPT ? 'Projetos (Betim Express & Microservices)' : 'Projects (Betim Express & Microservices)', category: isPT ? 'Navegação' : 'Navigation', icon: FolderGit2, shortcut: '4' },
-    { id: 'skills', label: isPT ? 'Matriz de Habilidades (.NET, Django, Redes)' : 'Skills Matrix (.NET, Django, Networks)', category: isPT ? 'Navegação' : 'Navigation', icon: Layers, shortcut: '5' },
-    { id: 'topology', label: isPT ? 'Topologia & Laboratório de Redes N2' : 'L2/L3 Topology Lab', category: isPT ? 'Navegação' : 'Navigation', icon: Network, shortcut: '6' },
-    { id: 'terminal', label: isPT ? 'Console Terminal Interativo' : 'Interactive Terminal Console', category: isPT ? 'Navegação' : 'Navigation', icon: Terminal, shortcut: '7' },
-    { id: 'contact', label: isPT ? 'Contato Direto & Mensagem' : 'Direct Contact & Message', category: isPT ? 'Navegação' : 'Navigation', icon: Send, shortcut: '8' },
+    { id: 'about', label: isPT ? 'Sobre (Perfil & Bio)' : 'About (Profile & Bio)', category: isPT ? 'Navegação' : 'Navigation', icon: User, shortcut: '1' },
+    { id: 'what-i-do', label: isPT ? 'Atuação (Infra & Backend)' : 'What I Do (Infra & Backend)', category: isPT ? 'Navegação' : 'Navigation', icon: Layers, shortcut: '2' },
+    { id: 'experience', label: isPT ? 'Experiência (Positivo S+)' : 'Experience (Positivo S+)', category: isPT ? 'Navegação' : 'Navigation', icon: FileText, shortcut: '3' },
+    { id: 'projects', label: isPT ? 'Projetos (Betim Express & APIs)' : 'Projects (Betim Express & APIs)', category: isPT ? 'Navegação' : 'Navigation', icon: FolderGit2, shortcut: '4' },
+    { id: 'skills', label: isPT ? 'Skills (.NET, Python, Redes)' : 'Skills (.NET, Python, Networks)', category: isPT ? 'Navegação' : 'Navigation', icon: Layers, shortcut: '5' },
+    { id: 'topology', label: isPT ? 'Lab Rede (Simulador Topologia L2/L3)' : 'Topology (L2/L3 Lab Simulator)', category: isPT ? 'Navegação' : 'Navigation', icon: Network, shortcut: '6' },
+    { id: 'terminal', label: isPT ? 'Terminal (Shell Interativo SRE)' : 'Terminal (Interactive SRE Shell)', category: isPT ? 'Navegação' : 'Navigation', icon: Terminal, shortcut: '7' },
+    { id: 'contact', label: isPT ? 'Contato (Canais Diretos & Mensagem)' : 'Contact (Direct Channels & Message)', category: isPT ? 'Navegação' : 'Navigation', icon: Send, shortcut: '8' },
   ];
 
   const themeOptions: { id: AccentColor; label: string; hex: string }[] = [
