@@ -5,7 +5,7 @@ export const GeometricPolyhedron: React.FC = () => {
   const { theme } = useTheme();
 
   return (
-    <div className="absolute top-0 left-0 -translate-x-12 sm:translate-x-0 w-48 sm:w-72 md:w-88 h-[800px] pointer-events-none -z-10 select-none overflow-hidden opacity-90 transition-all duration-700">
+    <div className="absolute top-0 left-0 w-48 sm:w-72 md:w-88 h-[800px] pointer-events-none -z-10 select-none overflow-hidden opacity-90 transition-all duration-700">
       <svg
         viewBox="0 0 400 800"
         fill="none"

@@ -124,18 +124,18 @@ const MainPortfolio: React.FC = () => {
         />
       </div>
 
-      {/* Background Geometric Polyhedron Origami Artwork (Pratama signature aesthetic) */}
-      <GeometricPolyhedron />
-
-      {/* Dynamic Pratama Ambient Lighting Glows */}
-      <div 
-        className="fixed top-20 right-10 w-[500px] h-[500px] rounded-full blur-[150px] pointer-events-none -z-10 transition-colors duration-500 opacity-20"
-        style={{ backgroundColor: theme.hex }}
-      />
-      <div 
-        className="fixed bottom-32 left-10 w-[450px] h-[450px] rounded-full blur-[150px] pointer-events-none -z-10 transition-colors duration-500 opacity-15"
-        style={{ backgroundColor: theme.hex }}
-      />
+      {/* Background Geometric Polyhedron Origami Artwork & Pratama Ambient Lighting Glows (Contained to prevent any mobile viewport spill) */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10 select-none">
+        <GeometricPolyhedron />
+        <div 
+          className="absolute top-20 right-0 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full blur-[120px] sm:blur-[150px] transition-colors duration-500 opacity-20"
+          style={{ backgroundColor: theme.hex }}
+        />
+        <div 
+          className="absolute bottom-32 left-0 w-[300px] sm:w-[450px] h-[300px] sm:h-[450px] rounded-full blur-[120px] sm:blur-[150px] transition-colors duration-500 opacity-15"
+          style={{ backgroundColor: theme.hex }}
+        />
+      </div>
 
       {/* Pratama Console Header with prominent 8-section direct bar */}
       <PratamaHeader 
@@ -146,7 +146,7 @@ const MainPortfolio: React.FC = () => {
       />
 
       {/* Pratama Main 2-Column Body Layout */}
-      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 pt-4 pb-28 lg:pb-12 flex flex-col lg:flex-row gap-6 items-start">
+      <div className="max-w-7xl w-full mx-auto px-3 sm:px-6 pt-3 sm:pt-4 pb-28 lg:pb-12 flex flex-col lg:flex-row gap-5 lg:gap-6 items-start">
         
         {/* Sticky Left Sidebar Navigation with Color Palette Blocks - Hidden on mobile, visible on desktop */}
         <div className="hidden lg:block w-full lg:w-auto lg:sticky lg:top-6 z-20">
